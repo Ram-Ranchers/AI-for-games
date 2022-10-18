@@ -11,48 +11,93 @@ public class Buildings : MonoBehaviour
     private List<Building> buildingsList { get; set; }
 
 
+    public int gridX = 4;
+    public int gridZ = 4;
+    public Vector3 gridOrigin = Vector3.zero;
+    public float gridOffset = 2f;
+    public bool generateOnEnable;
+    
     private void Start()
     {
         buildingsList = new List<Building>();
-        CheckSegment();
-    }
-
-    private void Update()
-    {
-        
-    }
-
-    private void CheckSegment()
-    {
-        for (int i = 0; i < 10; i++)
+        if (generateOnEnable)
         {
-            float width = Random.Range(1.75f, 2f);
-            float length = Random.Range(1.75f, 2f);
-            float height = Random.Range(2.5f, 10f);
+            Generate();
+        }
+        //AddBuildings();
+    }
+    
+    public void Generate()
+    {
+        SpawnGrid();
+    }
 
-            float rotation = 0f;
-            
-            Vector3 center = new Vector3(0.5f, 0, 0.5f);
-            
-            Vector3 size = new Vector3(length, width, height);
-
-            GameObject buildingObj = Instantiate(buildingContainer, instances.transform, true);
-            buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
-
-            Building building = new Building(center, size, rotation);
-            building.AddGameObject(buildingObj);
-            BuildingMesh(building);
-            building.AddCollider();
-
-            if (CheckValidPlacement(building))
+    void SpawnGrid()
+    {
+        for (int x = 0; x < gridX; x++)
+        {
+            for (int z = 0; z < gridZ; z++)
             {
-                buildingsList.Add(building);
-                break;
-            }
+                float width = Random.Range(1.75f, 2f);
+                float length = Random.Range(1.75f, 2f);
+                float height = Random.Range(2.5f, 10f);
+
+                float rotation = 0f;
             
-            DestroyImmediate(buildingObj);
+                Vector3 center = new Vector3(0.5f, 0, 0.5f);
+            
+                Vector3 size = new Vector3(length, width, height);
+
+                GameObject buildingObj = Instantiate(buildingContainer, transform.position + gridOrigin + new Vector3(gridOffset * x, 0, gridOffset * z), transform.rotation);
+                buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
+
+                Building building = new Building(center, size, rotation);
+                building.AddGameObject(buildingObj);
+                BuildingMesh(building);
+                building.AddCollider();
+
+                if (CheckValidPlacement(building))
+                {
+                    buildingsList.Add(building);
+                    break;
+                }
+            
+                DestroyImmediate(buildingObj);
+            }
         }
     }
+    
+    //private void AddBuildings()
+    //{
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        float width = Random.Range(1.75f, 2f);
+    //        float length = Random.Range(1.75f, 2f);
+    //        float height = Random.Range(2.5f, 10f);
+//
+    //        float rotation = 0f;
+    //        
+    //        Vector3 center = new Vector3(0.5f, 0, 0.5f);
+    //        
+    //        Vector3 size = new Vector3(length, width, height);
+//
+    //        GameObject buildingObj = Instantiate(buildingContainer, instances.transform, true);
+    //        buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
+//
+    //        Building building = new Building(center, size, rotation);
+    //        building.AddGameObject(buildingObj);
+    //        BuildingMesh(building);
+    //        building.AddCollider();
+//
+    //        if (CheckValidPlacement(building))
+    //        {
+    //            buildingsList.Add(building);
+    //            break;
+    //        }
+    //        
+    //        DestroyImmediate(buildingObj);
+    //    }
+    //}
     
     private void BuildingMesh(Building building)
     {
