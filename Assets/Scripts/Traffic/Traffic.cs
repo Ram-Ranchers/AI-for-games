@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Traffic : MonoBehaviour
 {
-    [Serializedfield] private const float maxVehicles = 10;
-    private Vehicle[maxVehicles] vehicles; 
+    [SerializeField] private const float maxVehicles = 10;
+    private Vehicle[] vehicles; 
 
 
 
