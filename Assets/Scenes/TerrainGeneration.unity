@@ -418,11 +418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingContainer: {fileID: 1858826201}
   instances: {fileID: 114873629}
-  gridX: 4
-  gridZ: 4
-  gridOrigin: {x: 0, y: 0, z: 0}
-  gridOffset: 2
-  generateOnEnable: 1
+  terrain: {fileID: 2107498827}
+  grid: {fileID: 2107498829}
 --- !u!4 &856951336
 Transform:
   m_ObjectHideFlags: 0
@@ -730,6 +727,7 @@ GameObject:
   - component: {fileID: 2107498828}
   - component: {fileID: 2107498827}
   - component: {fileID: 2107498826}
+  - component: {fileID: 2107498829}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -797,6 +795,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!156049354 &2107498829
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107498825}
+  m_Enabled: 1
+  m_CellSize: {x: 1, y: 1, z: 1}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
 --- !u!1 &2114575015
 GameObject:
   m_ObjectHideFlags: 0

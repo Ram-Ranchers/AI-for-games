@@ -7,66 +7,58 @@ public class Buildings : MonoBehaviour
 {
     public GameObject buildingContainer;
     public GameObject instances;
-    
+    public Terrain terrain;
+    public Grid grid;
+
     private List<Building> buildingsList { get; set; }
-
-
-    public int gridX = 4;
-    public int gridZ = 4;
-    public Vector3 gridOrigin = Vector3.zero;
-    public float gridOffset = 2f;
-    public bool generateOnEnable;
     
     private void Start()
     {
         buildingsList = new List<Building>();
-        if (generateOnEnable)
-        {
-            Generate();
-        }
-        //AddBuildings();
-    }
-    
-    public void Generate()
-    {
-        SpawnGrid();
+        SpawnBuildings();
     }
 
-    void SpawnGrid()
+    private void Update()
     {
-        for (int x = 0; x < gridX; x++)
-        {
-            for (int z = 0; z < gridZ; z++)
+
+    }
+
+    void SpawnBuildings()
+    {
+
+            for (int x = 0; x < terrain.terrainData.bounds.size.x; x++)
             {
-                float width = Random.Range(1.75f, 2f);
-                float length = Random.Range(1.75f, 2f);
-                float height = Random.Range(2.5f, 10f);
-
-                float rotation = 0f;
-            
-                Vector3 center = new Vector3(0.5f, 0, 0.5f);
-            
-                Vector3 size = new Vector3(length, width, height);
-
-                GameObject buildingObj = Instantiate(buildingContainer, transform.position + gridOrigin + new Vector3(gridOffset * x, 0, gridOffset * z), transform.rotation);
-                buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
-
-                Building building = new Building(center, size, rotation);
-                building.AddGameObject(buildingObj);
-                BuildingMesh(building);
-                building.AddCollider();
-
-                if (CheckValidPlacement(building))
+                for (int z = 0; z < terrain.terrainData.bounds.size.z; z++)
                 {
-                    buildingsList.Add(building);
-                    break;
+                    float width = Random.Range(1.75f, 2f);
+                    float length = Random.Range(1.75f, 2f);
+                    float height = Random.Range(2.5f, 10f);
+
+                    float rotation = 0f;
+
+                    Vector3 centre = new Vector3(x, 0, z);
+
+                    Vector3 size = new Vector3(length, width, height);
+
+                    GameObject buildingObj = Instantiate(buildingContainer, centre, Quaternion.identity);
+                    buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
+
+                    Building building = new Building(centre, size, rotation);
+                    building.AddGameObject(buildingObj);
+                    BuildingMesh(building);
+                    building.AddCollider();
+
+                    //if (CheckValidPlacement(building))
+                    //{
+                    //    buildingsList.Add(building);
+                    //}
+
+                    //DestroyImmediate(buildingObj);          
                 }
-            
-                DestroyImmediate(buildingObj);
             }
-        }
-    }
     
+    }
+
     //private void AddBuildings()
     //{
     //    for (int i = 0; i < 10; i++)
@@ -74,21 +66,21 @@ public class Buildings : MonoBehaviour
     //        float width = Random.Range(1.75f, 2f);
     //        float length = Random.Range(1.75f, 2f);
     //        float height = Random.Range(2.5f, 10f);
-//
+    //
     //        float rotation = 0f;
     //        
     //        Vector3 center = new Vector3(0.5f, 0, 0.5f);
     //        
     //        Vector3 size = new Vector3(length, width, height);
-//
+    //
     //        GameObject buildingObj = Instantiate(buildingContainer, instances.transform, true);
     //        buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
-//
+    //
     //        Building building = new Building(center, size, rotation);
     //        building.AddGameObject(buildingObj);
     //        BuildingMesh(building);
     //        building.AddCollider();
-//
+    //
     //        if (CheckValidPlacement(building))
     //        {
     //            buildingsList.Add(building);
@@ -98,7 +90,7 @@ public class Buildings : MonoBehaviour
     //        DestroyImmediate(buildingObj);
     //    }
     //}
-    
+
     private void BuildingMesh(Building building)
     {
         building.GameObject.GetComponent<MeshFilter>().mesh = new Mesh();
