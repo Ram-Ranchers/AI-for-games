@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Vehicle : MonoBehaviour
 {
+    [SerializeField] public float vehicleLength;
+    [SerializeField] public float vehicleSpeed;
+    public float distanceAlongRoad = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,4 +18,5 @@ public class Vehicle : MonoBehaviour
     {
         
     }
+
 }
