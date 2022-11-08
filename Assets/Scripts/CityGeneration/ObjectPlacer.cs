@@ -10,7 +10,7 @@ public class ObjectPlacer : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            transform.position = hit.point + 0.5f * hit.normal;
+            transform.position = hit.point + 0.0f * hit.normal;
             transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
         }
         else
