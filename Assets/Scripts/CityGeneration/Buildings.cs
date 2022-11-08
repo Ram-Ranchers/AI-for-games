@@ -9,13 +9,12 @@ namespace CityGeneration
     {
         public GameObject buildingContainer;
         public Terrain terrain;
-        public Grid grid;
-        
+
         private void Start()
         {
             SpawnBuildings();
         }
-    
+
         void SpawnBuildings()
         {
             for (int x = 0; x < terrain.terrainData.bounds.size.x; x++)
@@ -28,14 +27,13 @@ namespace CityGeneration
 
                     float rotation = 0f;
 
-                    Vector3 centre = new Vector3(x, 0, z);
+                    Vector3 centre = new Vector3(x, 10.0f, z);
 
                     Vector3 size = new Vector3(length, width, height);
 
                     if (!Physics.CheckSphere(centre, size.magnitude))
                     {
                         GameObject buildingObj = Instantiate(buildingContainer, centre, Quaternion.identity);
-                        //buildingObj.transform.name = "building_" + buildingsList.Count.ToString("D5");
 
                         Building building = new Building(centre, size, rotation);
                         building.AddGameObject(buildingObj);
@@ -45,7 +43,7 @@ namespace CityGeneration
                 }
             }
         }
-    
+
         private void BuildingMesh(Building building)
         {
             building.GameObject.GetComponent<MeshFilter>().mesh = new Mesh();
