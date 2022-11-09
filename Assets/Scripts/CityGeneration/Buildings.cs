@@ -15,7 +15,33 @@ namespace CityGeneration
             SpawnBuildings();
         }
 
-        void SpawnBuildings()
+        //public void SpawnBuildings(float radius)
+        //{
+        //    for (int x = 0; x < radius; x++)
+        //    {
+        //        float width = Random.Range(1.75f, 2f);
+        //        float length = Random.Range(1.75f, 2f);
+        //        float height = Random.Range(2.5f, 10f);
+
+        //        float rotation = 0f;
+
+        //        Vector3 size = new Vector3(length, width, height);
+
+        //        if (!Physics.CheckSphere(transform.position, width) && !Physics.CheckSphere(transform.position, length))
+        //        {
+        //            GameObject buildingObj = Instantiate(buildingContainer, transform.position, Quaternion.identity);
+
+        //            Building building = new Building(transform.position, size, rotation);
+        //            print(building.buildingType);
+        //            building.AddGameObject(buildingObj);
+        //            BuildingMesh(building);
+        //            building.AddCollider();
+        //            building.BuildingTypeParameters();
+        //        }
+        //    }
+        //}
+
+        public void SpawnBuildings()
         {
             for (int x = 0; x < terrain.terrainData.bounds.size.x; x++)
             {
@@ -31,14 +57,16 @@ namespace CityGeneration
 
                     Vector3 size = new Vector3(length, width, height);
 
-                    if (!Physics.CheckSphere(centre, size.magnitude))
+                    if (!Physics.CheckSphere(centre, width) && !Physics.CheckSphere(centre, length))
                     {
                         GameObject buildingObj = Instantiate(buildingContainer, centre, Quaternion.identity);
 
                         Building building = new Building(centre, size, rotation);
+                        building.buildingType = Random.Range(0, 3);
                         building.AddGameObject(buildingObj);
                         BuildingMesh(building);
                         building.AddCollider();
+                        building.BuildingTypeParameters();
                     }
                 }
             }
@@ -46,9 +74,9 @@ namespace CityGeneration
 
         private void BuildingMesh(Building building)
         {
-            building.GameObject.GetComponent<MeshFilter>().mesh = new Mesh();
+            building.gameObject.GetComponent<MeshFilter>().mesh = new Mesh();
 
-            Mesh mesh = building.GameObject.GetComponent<MeshFilter>().mesh;
+            Mesh mesh = building.gameObject.GetComponent<MeshFilter>().mesh;
 
             List<int> triangles = mesh.vertexCount == 0 ? new List<int>() : 
                 new List<int>(mesh.GetTriangles(0));
@@ -154,8 +182,12 @@ namespace CityGeneration
         private float Rotation { get; }
 
         private BoxCollider Collider { get; set; }
-    
-        public GameObject GameObject { get; private set; }
+
+        private Renderer renderer;
+
+        public GameObject gameObject { get; private set; }
+
+        public int buildingType;
 
         public Building(Vector3 center, Vector3 size, float rotation)
         {
@@ -168,17 +200,37 @@ namespace CityGeneration
 
         public void AddGameObject(GameObject gameObject)
         {
-            GameObject = gameObject;
+            this.gameObject = gameObject;
 
-            GameObject.transform.localPosition = Center;
-            GameObject.transform.localRotation = Quaternion.Euler(0, Rotation, 0);
+            this.gameObject.transform.localPosition = Center;
+            this.gameObject.transform.localRotation = Quaternion.Euler(0, Rotation, 0);
         }
 
         public void AddCollider()
         {
-            Collider = GameObject.GetComponent<BoxCollider>();
+            Collider = gameObject.GetComponent<BoxCollider>();
             Collider.size = new Vector3(Size.x * 2, Size.z + 0.75f, Size.y * 2);
             Collider.center = new Vector3(0, Size.z / 2.0f, 0);
+        }
+
+        public void BuildingTypeParameters()
+        {
+            renderer = gameObject.GetComponent<Renderer>();
+
+            switch (buildingType)
+            {
+                case 0:
+                    renderer.material.SetColor("_Color", Color.green);
+                    break;
+                case 1:
+                    renderer.material.SetColor("_Color", Color.blue);
+                    break;
+                case 2:
+                    renderer.material.SetColor("_Color", Color.red);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
