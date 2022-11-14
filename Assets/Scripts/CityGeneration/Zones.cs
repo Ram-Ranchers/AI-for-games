@@ -1,32 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using CityGeneration;
+using Random = UnityEngine.Random;
 
-public class Zones : MonoBehaviour
+namespace CityGeneration
 {
-    public int buildingType;
-
-    public Building building;
-
-    public Buildings buildings;
-
-    private void OnDrawGizmosSelected()
+    public class Zones : MonoBehaviour
     {
-        Gizmos.color = new Color(0, 0, 0, 0.5f);
-        Gizmos.DrawSphere(transform.position, 100);
-    }
+        public int buildingType;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject == buildings.terrain)
+        private Building building;
+
+        private GameObject buildingsGameObject;
+
+        private Buildings buildings;
+        
+        public Vector3 size;
+
+        private BoxCollider boxCollider;
+
+        private bool buildingsInRange;
+        
+        private void Start()
         {
-            building.buildingType = buildingType;
+            boxCollider = GetComponent<BoxCollider>();
+            boxCollider.size = size;
+
+            buildingsGameObject = GameObject.FindGameObjectWithTag("Building");
+            buildings = buildingsGameObject.GetComponent<Buildings>();
         }
-    }
+        
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = new Color(0, 0, 0, 0.5f);
+            Gizmos.DrawCube(transform.position, size);
+        }
 
-    private void OnClickMove()
-    {
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Building"))
+            {
+                buildingsInRange = true;
+            }
+        }
 
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Building"))
+            {
+                buildingsInRange = false;
+            }
+        }
     }
 }
