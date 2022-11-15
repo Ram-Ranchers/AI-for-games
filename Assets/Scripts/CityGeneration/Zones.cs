@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace CityGeneration
 {
@@ -24,31 +22,12 @@ namespace CityGeneration
         {
             boxCollider = GetComponent<BoxCollider>();
             boxCollider.size = size;
-
-            buildingsGameObject = GameObject.FindGameObjectWithTag("Building");
-            buildings = buildingsGameObject.GetComponent<Buildings>();
         }
         
         private void OnDrawGizmos()
         {
             Gizmos.color = new Color(0, 0, 0, 0.5f);
             Gizmos.DrawCube(transform.position, size);
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Building"))
-            {
-                buildingsInRange = true;
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.CompareTag("Building"))
-            {
-                buildingsInRange = false;
-            }
         }
     }
 }

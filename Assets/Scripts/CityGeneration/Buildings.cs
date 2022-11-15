@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,12 +12,28 @@ namespace CityGeneration
         public Terrain terrain;
         public List<Zones> zones;
         public List<BoxCollider> boxColliders;
+        private GameObject[] gameObjectZone;
         
         private void Start()
         {
+            if (gameObjectZone == null)
+            {
+                gameObjectZone = GameObject.FindGameObjectsWithTag("Zone");
+            }
+            
+            for (int i = 0; i < gameObjectZone.Length; i++)
+            {
+                zones = new List<Zones>(gameObjectZone[i].GetComponents<Zones>());
+                boxColliders = new List<BoxCollider>(gameObjectZone[i].GetComponents<BoxCollider>());
+            }
+
+            print(zones.Count);
+            print(boxColliders.Count);
+            print(gameObjectZone.Length);
+            
             SpawnBuildingsInsideZone();
         }
-
+        
         void SpawnBuildingsInsideZone()
         {
             for (int i = 0; i < boxColliders.Count; i++)
