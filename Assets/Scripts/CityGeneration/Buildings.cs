@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,16 +19,15 @@ namespace CityGeneration
             {
                 gameObjectZone = GameObject.FindGameObjectsWithTag("Zone");
             }
+
+            zones = new List<Zones>();
+            boxColliders = new List<BoxCollider>();
             
             for (int i = 0; i < gameObjectZone.Length; i++)
             {
-                zones = new List<Zones>(gameObjectZone[i].GetComponents<Zones>());
-                boxColliders = new List<BoxCollider>(gameObjectZone[i].GetComponents<BoxCollider>());
+                zones.Add(gameObjectZone[i].GetComponent<Zones>());
+                boxColliders.Add(gameObjectZone[i].GetComponent<BoxCollider>());
             }
-
-            print(zones.Count);
-            print(boxColliders.Count);
-            print(gameObjectZone.Length);
             
             SpawnBuildingsInsideZone();
         }
@@ -38,9 +36,9 @@ namespace CityGeneration
         {
             for (int i = 0; i < boxColliders.Count; i++)
             {
-                for (int x = 0; x < boxColliders[i].bounds.extents.x; x++)
+                for (int x = 0; x < boxColliders[i].bounds.size.x; x++)
                 {
-                    for (int z = 0; z < boxColliders[i].bounds.extents.z; z++)
+                    for (int z = 0; z < boxColliders[i].bounds.size.z; z++)
                     {
                         float width = Random.Range(1.75f, 2f);
                         float length = Random.Range(1.75f, 2f);
@@ -48,8 +46,8 @@ namespace CityGeneration
 
                         float rotation = 0f;
 
-                        Vector3 centre = new Vector3(x + boxColliders[i].transform.position.x, 10.0f, 
-                            z + boxColliders[i].transform.position.z);
+                        Vector3 centre = new Vector3(x + boxColliders[i].transform.position.x - boxColliders[i].bounds.extents.x, 10.0f, 
+                            z + boxColliders[i].transform.position.z - boxColliders[i].bounds.extents.x);
 
                         Vector3 size = new Vector3(length, width, height);
 
@@ -254,7 +252,7 @@ namespace CityGeneration
                     renderer.material.SetColor("_Color", Color.blue);
                     break;
                 case 2:
-                    renderer.material.SetColor("_Color", Color.red);
+                    renderer.material.SetColor("_Color", Color.yellow);
                     break;
                 default:
                     break;

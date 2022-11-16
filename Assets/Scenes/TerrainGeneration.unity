@@ -447,14 +447,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingContainer: {fileID: 1858826201}
   terrain: {fileID: 2107498827}
-  zones:
-  - {fileID: 905664046}
-  - {fileID: 1538632448}
-  - {fileID: 175189435}
-  boxColliders:
-  - {fileID: 905664047}
-  - {fileID: 1538632449}
-  - {fileID: 175189436}
+  zones: []
+  boxColliders: []
 --- !u!4 &856951336
 Transform:
   m_ObjectHideFlags: 0
