@@ -397,38 +397,6 @@ public class RoadNetwork
 		return new RoadSegment[] {left,right};
 	}
 
-	public void AddCityCentreO(Vector2 center, float angle)
-	{
-		angle = 360f / 8f;
-		RoadSegment last = null;
-		RoadSegment first = null;
-		for (int i=0; i<8; i++) 
-		{
-			Quaternion rotationA = Quaternion.Euler (0, 0, angle * i);
-			Quaternion rotationB = Quaternion.Euler (0, 0, angle * (i + 1));
-
-			RoadPoint a = new RoadPoint ();
-			a.point = rotationA * (new Vector2 (this.scale / 2.5f, 0) + center);
-			RoadPoint b = new RoadPoint ();
-			b.point = rotationB * (new Vector2 (this.scale / 2.5f, 0) + center);
-
-			RoadSegment rA = new RoadSegment (a, b, 0);
-			this.RoadSegments.Add(rA);
-			if(first == null)
-				first = rA;
-
-			if(last != null)
-			{
-				Intersection iA = new Intersection (new List<RoadPoint> (){rA.PointA,last.PointA});
-				this.RoadIntersections.Add (iA);
-			}
-			last = rA;
-		}
-
-		Intersection iB = new Intersection (new List<RoadPoint> (){first.PointA,last.PointA});
-		this.RoadIntersections.Add (iB);
-	}
-
 	public void AddCityCentreY(Vector2 center, float angle)
 	{
 		Quaternion rotation = Quaternion.Euler (0, 0, angle);

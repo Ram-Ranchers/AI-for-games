@@ -15,10 +15,10 @@ public class ControlRoads : MonoBehaviour {
 
     private void Start()
     {
-		GenerateClick();
+		GenerateRoads();
 	}
 
-	public void GenerateClick()
+	public void GenerateRoads()
 	{
 		this.network = new RoadNetwork (100f);
 		if(GridType == 0)
