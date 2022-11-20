@@ -27,7 +27,7 @@ public class Vehicle : MonoBehaviour
         List<Junction> closedPath;
 
         float gCost = 0.0f, hCost = 0.0f, fCost = 0.0f;
-        Junction nextJunction = junctions[0];//change to end junction of    currrent spline when implemented
+        Junction nextJunction = junctions[0];//change to end junction of currrent spline when implemented
         float nearDist = Vector3.Distance(nextJunction.transform.position, this.transform.position);
         for (int i = 0; i < junctions.Count; i++)
         {
