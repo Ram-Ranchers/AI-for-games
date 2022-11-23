@@ -23,7 +23,7 @@ namespace TerrainGeneration
             _noiseTypes = Noise.NoiseTypes.Keys.ToArray();
 
             _currentNoiseIndex = 0;
-            _scale = 0.1f;
+            _scale = 0.01f;
             _seed = 8;
             RecomputeNoise();
         }
