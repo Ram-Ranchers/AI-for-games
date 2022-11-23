@@ -28,7 +28,7 @@ public class ControlRoads : MonoBehaviour {
 			
 		else
         {
-			this.network.AddCityCentreY(new Vector2(0, 0), 120f);
+			this.network.AddCityCentreY(new Vector2(0, 0), 12f);
 		}
 	
 		this.network.SplitSegments (0);
