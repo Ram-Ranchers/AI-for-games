@@ -16,51 +16,46 @@ namespace Spline
         public void UpdateRoad()
         {
             Path path = GetComponent<PathCreator>().path;
-            Vector2[] points = path.CalculateEvenlySpacePoints(spacing);
-            GetComponent<MeshFilter>().mesh = CreateRoadMesh(points, path.IsClosed);
+            Vector3[] points = path.CalculateEvenlySpacePoints(spacing);
+            GetComponent<MeshFilter>().mesh = CreateRoadMesh(points);
 
             int textureRepeat = Mathf.RoundToInt(tiling * points.Length * spacing * .05f);
             GetComponent<MeshRenderer>().sharedMaterial.mainTextureScale = new Vector2(1, textureRepeat);
         }
         
-        Mesh CreateRoadMesh(Vector2[] points, bool isClosed)
+        Mesh CreateRoadMesh(Vector3[] points)
         {
             Vector3[] verts = new Vector3[points.Length * 2];
             Vector2[] uvs = new Vector2[verts.Length];
-            int numTris = 2 * (points.Length - 1) + ((isClosed) ? 2 : 0);
+            
+            int numTris = 2 * (points.Length - 1);
             int[] tris = new int[numTris * 3];
             int vertIndex = 0;
             int triIndex = 0;
 
             for (int i = 0; i < points.Length; i++)
             {
-                Vector2 forward = Vector2.zero;
-                if (i < points.Length - 1 || isClosed)
+                Vector3 forward = Vector3.zero;
+                if (i < points.Length - 1)
                 {
                     forward += points[(i + 1) % points.Length] - points[i];
                 }
-                if (i > 0 || isClosed)
+                if (i > 0)
                 {
                     forward += points[i] - points[(i - 1 + points.Length) % points.Length];
                 }
                 forward.Normalize();
-                Vector2 left = new Vector2(-forward.y, forward.x);
+                Vector3 left = new Vector3(-forward.y, forward.x);
 
                 verts[vertIndex] = points[i] + left * roadWidth * .5f;
                 verts[vertIndex + 1] = points[i] - left * roadWidth * .5f;
-
-                if (i == points.Length - 1 && isClosed)
-                {
-                    verts[vertIndex] = points[i] + left * roadWidth * .5f + forward * .02f;
-                    verts[vertIndex + 1] = points[i] - left * roadWidth * .5f + forward * .02f;
-                }
 
                 float completionPercent = i / (float)(points.Length - 1);
                 float v = 1 - Mathf.Abs(2 * completionPercent - 1);
                 uvs[vertIndex] = new Vector2(0, v);
                 uvs[vertIndex + 1] = new Vector2(1, v);
                 
-                if (i < points.Length - 1 || isClosed)
+                if (i < points.Length - 1)
                 {
                     tris[triIndex] = vertIndex;
                     tris[triIndex + 1] = (vertIndex + 2) % verts.Length;

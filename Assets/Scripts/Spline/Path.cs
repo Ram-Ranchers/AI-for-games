@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Spline
@@ -8,65 +7,23 @@ namespace Spline
     public class Path
     {
         [SerializeField, HideInInspector]
-        private List<Vector2> points;
-        [SerializeField, HideInInspector]
-        private bool isClosed;
+        private List<Vector3> points;
         [SerializeField, HideInInspector]
         private bool autoSetControlPoints;
     
-        public Path(Vector2 centre)
+        public Path(Vector3 centre)
         {
-            points = new List<Vector2>
+            points = new List<Vector3>
             {
-                centre + Vector2.left,
-                centre + (Vector2.left + Vector2.up) * 5f,
-                centre + (Vector2.right + Vector2.down) * 5f,
-                centre + Vector2.right
+                centre + Vector3.left * 2f,
+                centre + Vector3.left * 1f + Vector3.forward * .5f,
+                centre + Vector3.right * 1f - Vector3.forward * .5f,
+                centre + Vector3.right * 2f
             };
         }
 
-        public Vector2 this[int i]
-        {
-            get
-            {
-                return points[i];
-            }
-        }
+        public Vector3 this[int i] => points[i];
 
-        public bool IsClosed
-        {
-            get
-            {
-                return isClosed;
-            }
-            set
-            {
-                if (isClosed != value)
-                {
-                    isClosed = value;
-
-                    if (isClosed)
-                    {
-                        points.Add(points[points.Count - 1] * 2 - points[points.Count - 2]);
-                        points.Add(points[0] * 2 - points[1]);
-                        if (autoSetControlPoints)
-                        {
-                            AutoSetAnchorControlPoints(0);
-                            AutoSetAnchorControlPoints(points.Count - 3);
-                        }
-                    }
-                    else
-                    {
-                        points.RemoveRange(points.Count - 2, 2);
-                        if (autoSetControlPoints)
-                        {
-                            AutoSetStartAndEndControls();
-                        }
-                    }
-                }
-            }
-        }
-        
         public bool AutoSetControlPoints
         {
             get
@@ -86,23 +43,11 @@ namespace Spline
             }
         }
     
-        public int NumPoints
-        {
-            get
-            {
-                return points.Count;
-            }
-        }
-    
-        public int NumSegments
-        {
-            get
-            {
-                return points.Count / 3;
-            }
-        }
-    
-        public void AddSegment(Vector2 anchorPos)
+        public int NumPoints => points.Count;
+
+        public int NumSegments => points.Count / 3;
+
+        public void AddSegment(Vector3 anchorPos)
         {
             points.Add(points[points.Count - 1] * 2 - points[points.Count - 2]);
             points.Add((points[points.Count - 1] + anchorPos) * .5f);
@@ -114,9 +59,9 @@ namespace Spline
             }
         }
 
-        public void SplitSegment(Vector2 anchorPos, int segmentIndex)
+        public void SplitSegment(Vector3 anchorPos, int segmentIndex)
         {
-            points.InsertRange(segmentIndex * 3 + 2, new Vector2[]{Vector2.zero, anchorPos, Vector2.zero});
+            points.InsertRange(segmentIndex * 3 + 2, new Vector3[]{Vector2.zero, anchorPos, Vector2.zero});
             if (autoSetControlPoints)
             {
                 AutoSetAllAffectedControlPoints(segmentIndex * 3 + 3);
@@ -129,17 +74,13 @@ namespace Spline
         
         public void DeleteSegment(int anchorIndex)
         {
-            if (NumSegments > 2 || !isClosed && NumSegments > 1)
+            if (NumSegments > 2 || NumSegments > 1)
             {
                 if (anchorIndex == 0)
                 {
-                    if (isClosed)
-                    {
-                        points[points.Count - 1] = points[2];
-                    }
                     points.RemoveRange(0, 3);
                 }
-                else if (anchorIndex == points.Count - 1 && !isClosed)
+                else if (anchorIndex == points.Count - 1)
                 {
                     points.RemoveRange(anchorIndex - 2, 3);
                 }
@@ -150,14 +91,16 @@ namespace Spline
             }
         }
         
-        public Vector2[] GetPointsInSegment(int i)
+        public Vector3[] GetPointsInSegment(int i)
         {
-            return new Vector2[] { points[i * 3], points[i * 3 + 1], points[i * 3 + 2], points[LoopIndex(i * 3 + 3)] };
+            return new [] { points[i * 3], points[i * 3 + 1], points[i * 3 + 2], points[LoopIndex(i * 3 + 3)] };
         }
 
-        public void MovePoint(int i, Vector2 pos)
+        public void MovePoint(int i, Vector3 pos)
         {
-            Vector2 deltaMove = pos - points[i];
+            pos.y = 0;
+            
+            Vector3 deltaMove = pos - points[i];
 
             if (i % 3 == 0 || !autoSetControlPoints)
             {
@@ -171,12 +114,12 @@ namespace Spline
                 {
                     if (i % 3 == 0)
                     {
-                        if (i + 1 < points.Count || isClosed)
+                        if (i + 1 < points.Count)
                         {
                             points[LoopIndex(i + 1)] += deltaMove;
                         }
 
-                        if (i - 1 >= 0 || isClosed)
+                        if (i - 1 >= 0)
                         {
                             points[LoopIndex(i - 1)] += deltaMove;
                         }
@@ -187,11 +130,11 @@ namespace Spline
                         int correspondingControlIndex = (nexPointIsAnchor) ? i + 2 : i - 2;
                         int anchorIndex = (nexPointIsAnchor) ? i + 1 : i - 1;
 
-                        if (correspondingControlIndex >= 0 && correspondingControlIndex < points.Count || isClosed)
+                        if (correspondingControlIndex >= 0 && correspondingControlIndex < points.Count)
                         {
                             float dst = (points[LoopIndex(anchorIndex)] - points[LoopIndex(correspondingControlIndex)])
                                 .magnitude;
-                            Vector2 dir = (points[LoopIndex(anchorIndex)] - pos).normalized;
+                            Vector3 dir = (points[LoopIndex(anchorIndex)] - pos).normalized;
                             points[LoopIndex(correspondingControlIndex)] = points[LoopIndex(anchorIndex)] + dir * dst;
                         }
                     }
@@ -199,31 +142,31 @@ namespace Spline
             }
         }
 
-        public Vector2[] CalculateEvenlySpacePoints(float spacing, float resolution = 1)
+        public Vector3[] CalculateEvenlySpacePoints(float spacing, float resolution = 1)
         {
-            List<Vector2> evenlySpacedPoints = new List<Vector2>();
+            List<Vector3> evenlySpacedPoints = new List<Vector3>();
             evenlySpacedPoints.Add(points[0]);
-            Vector2 previousPoint = points[0];
+            Vector3 previousPoint = points[0];
             float dstSinceLastEvenPoint = 0;
 
             for (int segmentIndex = 0; segmentIndex < NumSegments; segmentIndex++)
             {
-                Vector2[] p = GetPointsInSegment(segmentIndex);
-                float controlNetLength = Vector2.Distance(p[0],
-                    p[1]) + Vector2.Distance(p[1], p[2]) + Vector2.Distance(p[2], p[3]);
-                float estimatedCurveLength = Vector2.Distance(p[0], p[3]) + controlNetLength / 2f;
+                Vector3[] p = GetPointsInSegment(segmentIndex);
+                float controlNetLength = Vector3.Distance(p[0],
+                    p[1]) + Vector3.Distance(p[1], p[2]) + Vector3.Distance(p[2], p[3]);
+                float estimatedCurveLength = Vector3.Distance(p[0], p[3]) + controlNetLength / 2f;
                 int divisions = Mathf.CeilToInt(estimatedCurveLength * resolution * 10);
                 float t = 0;
                 while (t <= 1)
                 {
                     t += 1f / divisions;
-                    Vector2 pointOnCurve = Bezier.EvaluateCubic(p[0], p[1], p[2], p[3], t);
-                    dstSinceLastEvenPoint += Vector2.Distance(previousPoint, pointOnCurve);
+                    Vector3 pointOnCurve = Bezier.EvaluateCubic(p[0], p[1], p[2], p[3], t);
+                    dstSinceLastEvenPoint += Vector3.Distance(previousPoint, pointOnCurve);
 
                     while (dstSinceLastEvenPoint >= spacing)
                     {
                         float overshootDst = dstSinceLastEvenPoint - spacing;
-                        Vector2 newEvenlySpacePoint =
+                        Vector3 newEvenlySpacePoint =
                             pointOnCurve + (previousPoint - pointOnCurve).normalized * overshootDst;
                         evenlySpacedPoints.Add(newEvenlySpacePoint);
                         dstSinceLastEvenPoint = overshootDst;
@@ -233,16 +176,9 @@ namespace Spline
                     previousPoint = pointOnCurve;
                 }
             }
-
-            if (!isClosed)
-            {
-                evenlySpacedPoints.Add(points[points.Count - 1]);
-            }
-            else
-            {
-                evenlySpacedPoints.Add(points[0]);
-            }
             
+            evenlySpacedPoints.Add(points[points.Count - 1]);
+
             return evenlySpacedPoints.ToArray();
         }
         
@@ -250,7 +186,7 @@ namespace Spline
         {
             for (int i = updatedAnchorIndex - 3; i <= updatedAnchorIndex + 3; i += 3)
             {
-                if (i >= 0 && i < points.Count || isClosed)
+                if (i >= 0 && i < points.Count)
                 {
                     AutoSetAnchorControlPoints(LoopIndex(i));
                 }
@@ -271,19 +207,19 @@ namespace Spline
     
         private void AutoSetAnchorControlPoints(int anchorIndex)
         {
-            Vector2 anchorPos = points[anchorIndex];
-            Vector2 dir = Vector2.zero;
+            Vector3 anchorPos = points[anchorIndex];
+            Vector3 dir = Vector3.zero;
             float[] neighbourDistances = new float[2];
 
-            if (anchorIndex - 3 >= 0 || isClosed)
+            if (anchorIndex - 3 >= 0)
             {
-                Vector2 offset = points[LoopIndex(anchorIndex - 3)] - anchorPos;
+                Vector3 offset = points[LoopIndex(anchorIndex - 3)] - anchorPos;
                 dir += offset.normalized;
                 neighbourDistances[0] = offset.magnitude;
             }
-            if (anchorIndex + 3 >= 0 || isClosed)
+            if (anchorIndex + 3 >= 0)
             {
-                Vector2 offset = points[LoopIndex(anchorIndex + 3)] - anchorPos;
+                Vector3 offset = points[LoopIndex(anchorIndex + 3)] - anchorPos;
                 dir -= offset.normalized;
                 neighbourDistances[1] = -offset.magnitude;
             }
@@ -293,20 +229,17 @@ namespace Spline
             for (int i = 0; i < 2; i++)
             {
                 int controlIndex = anchorIndex + i * 2 - 1;
-                if (controlIndex >= 0 && controlIndex < points.Count || isClosed)
+                if (controlIndex >= 0 && controlIndex < points.Count)
                 {
                     points[LoopIndex(controlIndex)] = anchorPos + dir * neighbourDistances[i] * .5f;
                 }
             }
         }
-
+ 
         private void AutoSetStartAndEndControls()
         {
-            if (!isClosed)
-            {
-                points[1] = (points[0] + points[2]) * .5f;
-                points[points.Count - 2] = (points[points.Count - 1] + points[points.Count - 3]) * .5f;
-            }
+            points[1] = (points[0] + points[2]) * .5f;
+            points[points.Count - 2] = (points[points.Count - 1] + points[points.Count - 3]) * .5f;
         }
     
         private int LoopIndex(int i)

@@ -7,13 +7,7 @@ namespace Spline
     public class PathEditor : Editor
     {
         private PathCreator creator;
-        private Path path
-        {
-            get
-            {
-                return creator.path;
-            }
-        }
+        private Path path => creator.path;
 
         private const float segmentSelectDistanceThreshold = .1f;
         private int selectedSegmentIndex = -1;
@@ -27,13 +21,6 @@ namespace Spline
             {
                 Undo.RecordObject(creator, "Create new");
                 creator.CreatePath();
-            }
-
-            bool isClosed = GUILayout.Toggle(path.IsClosed, "Closed");
-            if (isClosed != path.IsClosed)
-            {
-                Undo.RecordObject(creator, "Toggle closed");
-                path.IsClosed = isClosed;
             }
 
             bool autoSetControlPoints = GUILayout.Toggle(path.AutoSetControlPoints, "Auto Set Control Points");
@@ -58,8 +45,8 @@ namespace Spline
         private void Input()
         {
             Event guiEvent = Event.current;
-            Vector2 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
-
+            Vector3 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
+            
             if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.shift)
             {
                 if (selectedSegmentIndex != -1)
@@ -67,11 +54,9 @@ namespace Spline
                     Undo.RecordObject(creator, "Split segment");
                     path.SplitSegment(mousePos, selectedSegmentIndex);
                 }
-                else if (!path.IsClosed)
-                {
-                    Undo.RecordObject(creator, "Add segment");
-                    path.AddSegment(mousePos);  
-                }
+
+                Undo.RecordObject(creator, "Add segment");
+                path.AddSegment(mousePos);
             }
 
             if (guiEvent.type == EventType.MouseDown && guiEvent.button == 1)
@@ -81,7 +66,7 @@ namespace Spline
 
                 for (int i = 0; i < path.NumPoints; i += 3)
                 {
-                    float dst = Vector2.Distance(mousePos, path[i]);
+                    float dst = Vector3.Distance(mousePos, path[i]);
                     if (dst < minDstToAnchor)
                     {
                         minDstToAnchor = dst;
@@ -103,7 +88,7 @@ namespace Spline
 
                 for (int i = 0; i < path.NumSegments; i++)
                 {
-                    Vector2[] points = path.GetPointsInSegment(i);
+                    Vector3[] points = path.GetPointsInSegment(i);
                     float dst = HandleUtility.DistancePointBezier(mousePos, points[0],
                         points[3], points[1], points[2]);
                     if (dst < minDstToSegment)
@@ -127,7 +112,7 @@ namespace Spline
         {
             for (int i = 0; i < path.NumSegments; i++)
             {
-                Vector2[] points = path.GetPointsInSegment(i);
+                Vector3[] points = path.GetPointsInSegment(i);
                 if (creator.displayControlPoints)
                 {
                     Handles.color = Color.black;
@@ -145,7 +130,7 @@ namespace Spline
                 {
                     Handles.color = (i % 3 == 0) ? creator.anchorCol : creator.controlCol;
                     float handleSize = (i % 3 == 0) ? creator.anchorDiameter : creator.controlDiameter;
-                    Vector2 newPos = Handles.FreeMoveHandle(path[i], Quaternion.identity,
+                    Vector3 newPos = Handles.FreeMoveHandle(path[i], Quaternion.identity,
                         handleSize, Vector3.zero, Handles.CylinderHandleCap);
                     if (path[i] != newPos)
                     {
