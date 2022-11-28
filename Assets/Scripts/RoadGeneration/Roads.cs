@@ -521,7 +521,7 @@ public class RoadPoint
 		this.mySegement = segment;
 	}
 
-	public override bool Equals(object other) 
+    public override bool Equals(object other) 
 	{
         //just check distance, ignore segment
 		if (Vector2.Distance ((other as RoadPoint).point, this.point) < 0.01f)
@@ -530,3 +530,4 @@ public class RoadPoint
 		return false;
 	}
 }
+

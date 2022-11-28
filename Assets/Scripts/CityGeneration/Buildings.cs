@@ -28,11 +28,9 @@ namespace CityGeneration
                 zones.Add(gameObjectZone[i].GetComponent<Zones>());
                 boxColliders.Add(gameObjectZone[i].GetComponent<BoxCollider>());
             }
-            
-            SpawnBuildingsInsideZone();
         }
         
-        void SpawnBuildingsInsideZone()
+        public void SpawnBuildingsInsideZone()
         {
             for (int i = 0; i < boxColliders.Count; i++)
             {
@@ -46,13 +44,16 @@ namespace CityGeneration
 
                         float rotation = 0f;
 
+                        int layermask = 1 << 5;
+                        layermask = ~layermask;
+
                         Vector3 centre = new Vector3(x + boxColliders[i].transform.position.x - boxColliders[i].bounds.extents.x, 10.0f, 
                             z + boxColliders[i].transform.position.z - boxColliders[i].bounds.extents.x);
 
                         Vector3 size = new Vector3(length, width, height);
 
-                        if (!Physics.CheckSphere(centre, width, 5, QueryTriggerInteraction.Ignore) &&
-                            !Physics.CheckSphere(centre, length, 5, QueryTriggerInteraction.Ignore))
+                        if (!Physics.CheckSphere(centre, width, layermask, QueryTriggerInteraction.Ignore) &&
+                            !Physics.CheckSphere(centre, length, layermask, QueryTriggerInteraction.Ignore))
                         {
                             GameObject buildingObj = Instantiate(buildingContainer, centre, Quaternion.identity);
 
@@ -61,7 +62,7 @@ namespace CityGeneration
                             building.AddGameObject(buildingObj);
                             BuildingMesh(building);
                             building.AddCollider();
-                            building.BuildingTypeParameters();
+                            building.BuildingTypeParameters();   
                         }
                     }
                 }

@@ -155,8 +155,8 @@ public class RoadRenderer : MonoBehaviour
 	{
         Mesh mesh = this.meshFilter.mesh;
 
-        //get mesh details
-        List<int> triangles = mesh.vertexCount == 0 ? new List<int>() : new List<int> (mesh.triangles);
+		//get mesh details
+		List<int> triangles = mesh.vertexCount == 0 ? new List<int>() : new List<int> (mesh.triangles);
 		List<Vector3> vertices = new List<Vector3> (mesh.vertices);
 		List<Vector3> normals = new List<Vector3> (mesh.normals);
 		List<Vector2> uvs = new List<Vector2> (mesh.uv);
@@ -202,6 +202,15 @@ public class RoadRenderer : MonoBehaviour
 		//mesh.normals = vertices.ToArray();
 		mesh.RecalculateNormals ();
 	}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == 6)
+        {
+			Debug.Log("oi");
+			Destroy(other.gameObject);
+        }
+    }
 }
 
 public class CircleSort : IComparer<Vector3>

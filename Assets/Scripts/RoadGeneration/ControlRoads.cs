@@ -12,41 +12,37 @@ public class ControlRoads : MonoBehaviour {
 	public List<Intersection> Intersections {get; private set;}
 
 	public int GridType;
-
-    private void Start()
-    {
-		GenerateRoads();
-	}
+	public Terrain terrain;
 
 	public void GenerateRoads()
 	{
-		this.network = new RoadNetwork (100f);
+		network = new RoadNetwork (100f);
 		if(GridType == 0)
         {
-			this.network.AddCityCentreX(new Vector2(0, 0), 120f);
+			network.AddCityCentreX(new Vector2(0,0), 120f);
 		}
 			
 		else
         {
-			this.network.AddCityCentreY(new Vector2(0, 0), 12f);
+			network.AddCityCentreY(new Vector2(0, 0), 12f);
 		}
 	
-		this.network.SplitSegments (0);
-		this.network.SplitSegments (0);
-		this.network.SplitSegments (1);
-		this.network.SplitSegments (1);
-		this.network.SplitSegments (2);
-		this.network.SplitSegments (3);
+		network.SplitSegments (0);
+		network.SplitSegments (0);
+		network.SplitSegments (1);
+		network.SplitSegments (1);
+		network.SplitSegments (2);
+		network.SplitSegments (3);
 		
-		this.roadRenderer = this.GetComponent<RoadRenderer> ();
-		this.roadRenderer.ClearData ();
+		roadRenderer = GetComponent<RoadRenderer> ();
+		roadRenderer.ClearData ();
 
-		foreach (RoadSegment segment in this.network.RoadSegments)
-            this.roadRenderer.AddRoadSegments(segment);
+		foreach (RoadSegment segment in network.RoadSegments)
+            roadRenderer.AddRoadSegments(segment);
 
-		foreach (Intersection inter in this.network.RoadIntersections)
-			this.roadRenderer.AddIntersection (inter);
+		foreach (Intersection inter in network.RoadIntersections)
+			roadRenderer.AddIntersection (inter);
 
-		this.RoadSegments = new List<RoadSegment> (this.network.RoadSegments);
+		RoadSegments = new List<RoadSegment> (network.RoadSegments);
 	}
 }
