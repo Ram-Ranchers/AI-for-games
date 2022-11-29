@@ -12,7 +12,8 @@ public class Vehicle : MonoBehaviour
     public float distanceAlongRoad = 0;
 
     public Transform PointA;
-    private float stoppingDistance = 10;
+    private float slowingDistance = 50f;
+    private float maxSpeed = 100f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,36 +28,42 @@ public class Vehicle : MonoBehaviour
     }
 
     private void Move()
-    {
-        float maxSpeed = 100f;
+    {        
         float acceleration = 10f;
-        float deceleration = 0;
-        bool decelerating = false;
+        float speedPercent = 1f;
 
+        Vector3 targetDir = PointA.position - transform.position;
+        float dot = Vector3.Dot(targetDir, transform.forward);
 
-        if(vehicleSpeed < maxSpeed && !decelerating)
+        //RaycastHit hit;
+
+        //if(Physics.Raycast(transform.position, transform.forward, out hit, slowingDistance))
+        //{
+
+        //}
+
+        if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
+        {
+            speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
+
+            if (speedPercent < 0.1f)
+            {
+                vehicleSpeed = 0f;
+            }
+        }
+
+        else
         {
             vehicleSpeed += acceleration * Time.deltaTime;
         }
-        else
-        {
-            vehicleSpeed = maxSpeed;
-        }
 
-        //broken
-        if(Vector3.Distance(transform.position, PointA.position) <= stoppingDistance && vehicleSpeed > 0)
-        {
-            decelerating = true;
-            deceleration += acceleration;
-        }
-        else
-        {
-            decelerating = false;
-            deceleration = 0;
-        }
-
-        transform.Translate(transform.forward * vehicleSpeed * Time.deltaTime);
+        transform.Translate(transform.forward * Time.deltaTime * vehicleSpeed * speedPercent);
     }
+
+    private float DistanceFromPoint(Vector3 point)
+    {
+        return Vector3.Distance(transform.position, point);
+    }    
 
     void findPath(List<Junction> junctions, Junction targetJunction)
     {
