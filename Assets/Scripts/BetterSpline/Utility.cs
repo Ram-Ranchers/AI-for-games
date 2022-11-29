@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEditor;
 
 namespace BetterSpline 
 {
-    public static class MathUtility 
+    public static class Utility 
     {
         public static Vector3 TransformPoint (Vector3 p, Transform t) 
         {
@@ -47,6 +48,22 @@ namespace BetterSpline
         public static float MinAngle (Vector3 a, Vector3 b, Vector3 c) 
         {
             return Vector3.Angle (a - b, c - b);
+        }
+        
+        public static Vector3 GetMouseWorldPosition(float depthFor3DSpace = 10)
+        {
+            var mouseRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            Vector3 worldMouse = Physics.Raycast(mouseRay, out var hitInfo, depthFor3DSpace * 2f) ? 
+                hitInfo.point : mouseRay.GetPoint(depthFor3DSpace);
+            
+            float yDir = mouseRay.direction.y;
+            if (yDir != 0)
+            {
+                float dstToXZPlane = Mathf.Abs(mouseRay.origin.y / yDir);
+                worldMouse = mouseRay.GetPoint(dstToXZPlane);
+            }
+   
+            return worldMouse;
         }
     }
 }

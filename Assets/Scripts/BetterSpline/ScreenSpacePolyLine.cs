@@ -72,10 +72,10 @@ namespace BetterSpline
 					Vector3 nextPointOnPath = CubicBezierUtility.EvaluateCurve(segmentPoints[0], segmentPoints[1],
 						segmentPoints[2], segmentPoints[3], t + increment);
 					
-					float localAngle = 180 - MathUtility.MinAngle(prevPointOnPath, pointOnPath, nextPointOnPath);
+					float localAngle = 180 - Utility.MinAngle(prevPointOnPath, pointOnPath, nextPointOnPath);
 
 					float angleFromPrevVertex =
-						180 - MathUtility.MinAngle(lastAddedPoint, pointOnPath, nextPointOnPath);
+						180 - Utility.MinAngle(lastAddedPoint, pointOnPath, nextPointOnPath);
 					float angleError = Mathf.Max(localAngle, angleFromPrevVertex);
 
 
@@ -111,7 +111,7 @@ namespace BetterSpline
 			cumululativeLengthWorld = new float[verticesWorld.Count];
 			for (int i = 0; i < verticesWorld.Count; i++)
 			{
-				verticesWorld[i] = MathUtility.TransformPoint(verticesWorld[i], transform);
+				verticesWorld[i] = Utility.TransformPoint(verticesWorld[i], transform);
 				if (i > 0)
 				{
 					pathLengthWorld += (verticesWorld[i - 1] - verticesWorld[i]).magnitude;
@@ -158,7 +158,7 @@ namespace BetterSpline
 				}
 			}
 
-			Vector2 closestPointOnLine = MathUtility.ClosestPointOnLineSegment(mousePos,
+			Vector2 closestPointOnLine = Utility.ClosestPointOnLineSegment(mousePos,
 				points[closestPolyLineSegmentIndex], points[closestPolyLineSegmentIndex + 1]);
 			float dstToPointOnLine = (points[closestPolyLineSegmentIndex] - closestPointOnLine).magnitude;
 

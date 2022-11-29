@@ -18,7 +18,6 @@ namespace BetterSpline
         public HandleType anchorShape;
         public HandleType controlShape;
 
-
         [Header("Anchor Colours")]
         public Color anchor = new(0.95f, 0.25f, 0.25f, 0.85f);
         public Color anchorHighlighted = new(1, 0.57f, 0.4f);
@@ -35,10 +34,7 @@ namespace BetterSpline
         public Color highlightedPath = new(1, 0.6f, 0);
         public Color bounds = new(1, 1, 1, .4f);
         public Color segmentBounds = new(1, 1, 1, .4f);
-
-        [Header("Vertex Path Colours")]
-        public Color vertexPath = Color.white;
-
+        
         [Header("Normals")]
         public Color normals = Color.yellow;
         [Range(0,1)]

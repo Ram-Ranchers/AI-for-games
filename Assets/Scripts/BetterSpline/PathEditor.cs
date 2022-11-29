@@ -95,7 +95,7 @@ namespace BetterSpline
 
 				int handleIndex = (previousMouseOverHandleIndex + i) % bezierPath.NumPoints;
 				float handleRadius = GetHandleDiameter(globalDisplaySettings.anchorSize * data.bezierHandleScale, bezierPath[handleIndex]) / 2f;
-				Vector3 pos = MathUtility.TransformPoint(bezierPath[handleIndex], creator.transform);
+				Vector3 pos = Utility.TransformPoint(bezierPath[handleIndex], creator.transform);
 				float dst = HandleUtility.DistanceToCircle(pos, handleRadius);
 				if (dst == 0)
 				{
@@ -113,7 +113,7 @@ namespace BetterSpline
 					if (selectedSegmentIndex != -1 && selectedSegmentIndex < bezierPath.NumSegments)
 					{
 						Vector3 newPathPoint = pathMouseInfo.closestWorldPointToMouse;
-						newPathPoint = MathUtility.InverseTransformPoint(newPathPoint, creator.transform);
+						newPathPoint = Utility.InverseTransformPoint(newPathPoint, creator.transform);
 						Undo.RecordObject(creator, "Split segment");
 						bezierPath.SplitSegment(newPathPoint, selectedSegmentIndex, pathMouseInfo.timeOnBezierSegment);
 					}
@@ -124,12 +124,12 @@ namespace BetterSpline
 		
 						var endPointLocal = bezierPath[pointIdx];
 						var endPointGlobal =
-							MathUtility.TransformPoint(endPointLocal, creator.transform);
+							Utility.TransformPoint(endPointLocal, creator.transform);
 						var distanceCameraToEndpoint = (Camera.current.transform.position - endPointGlobal).magnitude;
 						var newPointGlobal =
-							MouseUtility.GetMouseWorldPosition(distanceCameraToEndpoint);
+							Utility.GetMouseWorldPosition(distanceCameraToEndpoint);
 						var newPointLocal =
-							MathUtility.InverseTransformPoint(newPointGlobal, creator.transform);
+							Utility.InverseTransformPoint(newPointGlobal, creator.transform);
 
 						Undo.RecordObject(creator, "Add segment");
 						if (e.control || e.command)
@@ -201,7 +201,7 @@ namespace BetterSpline
 					Vector3[] points = bezierPath.GetPointsInSegment(i);
 					for (int j = 0; j < points.Length; j++)
 					{
-						points[j] = MathUtility.TransformPoint(points[j], creator.transform);
+						points[j] = Utility.TransformPoint(points[j], creator.transform);
 					}
 
 					if (data.showPerSegmentBounds)
@@ -261,7 +261,7 @@ namespace BetterSpline
 
 		void DrawHandle(int i)
 		{
-			Vector3 handlePosition = MathUtility.TransformPoint(bezierPath[i], creator.transform);
+			Vector3 handlePosition = Utility.TransformPoint(bezierPath[i], creator.transform);
 
 			float anchorHandleSize = GetHandleDiameter(globalDisplaySettings.anchorSize * data.bezierHandleScale, bezierPath[i]);
 			float controlHandleSize = GetHandleDiameter(globalDisplaySettings.controlSize * data.bezierHandleScale, bezierPath[i]);
@@ -357,7 +357,7 @@ namespace BetterSpline
 					break;
 			}
 
-			Vector3 localHandlePosition = MathUtility.InverseTransformPoint(handlePosition, creator.transform);
+			Vector3 localHandlePosition = Utility.InverseTransformPoint(handlePosition, creator.transform);
 
 			if (bezierPath[i] != localHandlePosition)
 			{

@@ -158,7 +158,11 @@ namespace BetterSpline
 		public Vector3[] GetPointsInSegment(int segmentIndex)
 		{
 			segmentIndex = Mathf.Clamp(segmentIndex, 0, NumSegments - 1);
-			return new[] { this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2], this[LoopIndex(segmentIndex * 3 + 3)] };
+			return new[]
+			{
+				this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2],
+				this[LoopIndex(segmentIndex * 3 + 3)]
+			};
 		}
 
 		public void MovePoint(int i, Vector3 pointPos, bool suppressPathModifiedEvent = false)
@@ -187,7 +191,7 @@ namespace BetterSpline
 				Vector3[] p = GetPointsInSegment(i);
 				for (int j = 0; j < p.Length; j++)
 				{
-					p[j] = MathUtility.TransformPoint(p[j], transform);
+					p[j] = Utility.TransformPoint(p[j], transform);
 				}
 
 				minMax.AddValue(p[0]);
