@@ -192,8 +192,6 @@ namespace BetterSpline
 
 		void DrawBezierPathSceneEditor()
 		{
-			Bounds bounds = bezierPath.CalculateBoundsWithTransform(creator.transform);
-
 			if (Event.current.type == EventType.Repaint)
 			{
 				for (int i = 0; i < bezierPath.NumSegments; i++)
@@ -219,35 +217,26 @@ namespace BetterSpline
 					Handles.DrawBezier(points[0], points[3], points[1], points[2], segmentCol, null, 2);
 				}
 
-				if (data.showPathBounds)
+				if (!hasUpdatedNormalsVertexPath)
 				{
-					Handles.color = globalDisplaySettings.bounds;
-					Handles.DrawWireCube(bounds.center, bounds.size);
+					normalsVertexPath = new VertexPath(bezierPath, creator.transform, normalsSpacing);
+					hasUpdatedNormalsVertexPath = true;
 				}
-				
-				if (data.showNormals)
+
+				if (editingNormalsOld != data.showNormals)
 				{
-					if (!hasUpdatedNormalsVertexPath)
-					{
-						normalsVertexPath = new VertexPath(bezierPath, creator.transform, normalsSpacing);
-						hasUpdatedNormalsVertexPath = true;
-					}
-
-					if (editingNormalsOld != data.showNormals)
-					{
-						editingNormalsOld = data.showNormals;
-						Repaint();
-					}
-
-					Vector3[] normalLines = new Vector3[normalsVertexPath.NumPoints * 2];
-					Handles.color = globalDisplaySettings.normals;
-					for (int i = 0; i < normalsVertexPath.NumPoints; i++)
-					{
-						normalLines[i * 2] = normalsVertexPath.GetPoint(i);
-						normalLines[i * 2 + 1] = normalsVertexPath.GetPoint(i) + normalsVertexPath.GetNormal(i) * globalDisplaySettings.normalsLength;
-					}
-					Handles.DrawLines(normalLines);
+					editingNormalsOld = data.showNormals;
+					Repaint();
 				}
+
+				Vector3[] normalLines = new Vector3[normalsVertexPath.NumPoints * 2];
+				Handles.color = globalDisplaySettings.normals;
+				for (int i = 0; i < normalsVertexPath.NumPoints; i++)
+				{
+					normalLines[i * 2] = normalsVertexPath.GetPoint(i);
+					normalLines[i * 2 + 1] = normalsVertexPath.GetPoint(i) + normalsVertexPath.GetNormal(i) * globalDisplaySettings.normalsLength;
+				}
+				Handles.DrawLines(normalLines);
 			}
 
 			if (data.displayAnchorPoints)
@@ -287,9 +276,7 @@ namespace BetterSpline
 
 					int attachedControlIndex = (i == bezierPath.NumPoints - 1) ? i - 1 : i + 1;
 					Vector3 dir = (bezierPath[attachedControlIndex] - handlePosition).normalized;
-					float handleRotOffset = (360 + bezierPath.GlobalNormalsAngle) % 360;
 					anchorAngleHandle.radius = handleSize * 3;
-					anchorAngleHandle.angle = handleRotOffset + bezierPath.GetAnchorNormalAngle(i / 3);
 					Vector3 handleDirection = Vector3.Cross(dir, Vector3.up);
 					Matrix4x4 handleMatrix = Matrix4x4.TRS(
 						handlePosition,
@@ -305,7 +292,6 @@ namespace BetterSpline
 						if (EditorGUI.EndChangeCheck())
 						{
 							Undo.RecordObject(creator, "Set angle");
-							bezierPath.SetAnchorNormalAngle(i / 3, anchorAngleHandle.angle - handleRotOffset);
 						}
 					}
 

@@ -30,16 +30,6 @@ namespace BetterSpline
                     }
                 }
             }
-
-            if (GUILayout.Button("Manual Update"))
-            {
-                if (TryFindPathCreator())
-                {
-                    TriggerUpdate();
-                    SceneView.RepaintAll();
-                }
-            }
-
         }
 
 

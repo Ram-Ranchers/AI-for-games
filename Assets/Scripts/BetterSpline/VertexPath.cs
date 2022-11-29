@@ -80,18 +80,12 @@ namespace BetterSpline
                     float t = (i / (localNormals.Length - 1f));
                     float angle = normalsAngleErrorAcrossJoin * t;
                     Quaternion rot = Quaternion.AngleAxis (angle, localTangents[i]);
-                    localNormals[i] = rot * localNormals[i] * (bezierPath.FlipNormals ? -1 : 1);
+                    localNormals[i] = rot * localNormals[i];
                 }
             }
             
             for (int anchorIndex = 0; anchorIndex < pathSplitData.anchorVertexMap.Count - 1; anchorIndex++) 
             {
-                int nextAnchorIndex = anchorIndex + 1;
-
-                float startAngle = bezierPath.GetAnchorNormalAngle (anchorIndex) + bezierPath.GlobalNormalsAngle;
-                float endAngle = bezierPath.GetAnchorNormalAngle (nextAnchorIndex) + bezierPath.GlobalNormalsAngle;
-                float deltaAngle = Mathf.DeltaAngle (startAngle, endAngle);
-
                 int startVertIndex = pathSplitData.anchorVertexMap[anchorIndex];
                 int endVertIndex = pathSplitData.anchorVertexMap[anchorIndex + 1];
 
@@ -102,11 +96,7 @@ namespace BetterSpline
                 }
                 for (int i = 0; i < num; i++) 
                 {
-                    int vertIndex = startVertIndex + i;
                     float t = num == 1 ? 1f : i / (num - 1f);
-                    float angle = startAngle + deltaAngle * t;
-                    Quaternion rot = Quaternion.AngleAxis (angle, localTangents[vertIndex]);
-                    localNormals[vertIndex] = rot * localNormals[vertIndex] * (bezierPath.FlipNormals ? -1 : 1);
                 }
             }
         }

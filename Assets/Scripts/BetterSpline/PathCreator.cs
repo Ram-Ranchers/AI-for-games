@@ -13,6 +13,15 @@ namespace BetterSpline
 
         GlobalDisplaySettings globalEditorDisplaySettings;
         
+        public BezierPath bezierPath {
+            set {
+                if (!initialized) {
+                    InitializeEditorData();
+                }
+                editorData.bezierPath = value;
+            }
+        }
+        
         public VertexPath path 
         {
             get 

@@ -18,7 +18,6 @@ namespace BetterSpline
         public float vertexPathMaxAngleError = .3f;
         public float vertexPathMinVertexSpacing = 0.01f;
         
-        public bool showPathBounds;
         public bool showPerSegmentBounds;
         public bool displayAnchorPoints = true;
         public float bezierHandleScale = 1;
