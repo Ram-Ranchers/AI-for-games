@@ -13,12 +13,12 @@ public class RoadGen : MonoBehaviour
     private void Start()
     {
         obj = new GameObject("WayPoint");
+        waypoints = new List<Transform>();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 50; i++)
         {
-            Instantiate(obj, new Vector3(Random.Range(0, 100), 0, Random.Range(0, 100)),
-                Quaternion.identity);
-            waypoints.Add(obj.transform);
+            waypoints.Add(Instantiate(obj, new Vector3(Random.Range(0, 100), 0, Random.Range(0, 100)),
+                Quaternion.identity).transform);
         }
 
         if (waypoints.Count > 0)
