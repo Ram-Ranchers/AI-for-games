@@ -186,16 +186,14 @@ namespace BetterSpline
 			return transform.position != transformPosition || transform.rotation != transformRotation ||
 			       transform.localScale != transformScale;
 		}
-
-
+		
 		public struct MouseInfo
 		{
 			public readonly float mouseDstToLine;
 			public readonly Vector3 closestWorldPointToMouse;
 			public readonly float timeOnBezierSegment;
 			public readonly int closestSegmentIndex;
-
-
+			
 			public MouseInfo(float mouseDstToLine, Vector3 closestWorldPointToMouse, float timeOnBezierSegment, int closestSegmentIndex)
 			{
 				this.mouseDstToLine = mouseDstToLine;

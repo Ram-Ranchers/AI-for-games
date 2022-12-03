@@ -46,7 +46,6 @@ namespace BetterSpline
             string[] guids = UnityEditor.AssetDatabase.FindAssets("t:GlobalDisplaySettings");
             if (guids.Length == 0)
             {
-                Debug.LogWarning("Could not find DisplaySettings asset. Will use default settings instead.");
                 return CreateInstance<GlobalDisplaySettings>();
             }
   
