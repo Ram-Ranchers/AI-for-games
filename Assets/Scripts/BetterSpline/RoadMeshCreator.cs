@@ -50,10 +50,10 @@ namespace BetterSpline
             
             for (int i = 0; i < path.NumPoints; i++) {
                 Vector3 localUp = path.up;
-                Vector3 localRight = Vector3.Cross (localUp, path.GetTangent (i));
+                Vector3 localRight = Vector3.Cross(localUp, path.GetTangent(i));
                 
-                Vector3 vertSideA = path.GetPoint (i) - localRight * Mathf.Abs (roadWidth);
-                Vector3 vertSideB = path.GetPoint (i) + localRight * Mathf.Abs (roadWidth);
+                Vector3 vertSideA = path.GetPoint(i) - localRight * Mathf.Abs(roadWidth);
+                Vector3 vertSideB = path.GetPoint(i) + localRight * Mathf.Abs(roadWidth);
                 
                 verts[vertIndex + 0] = vertSideA;
                 verts[vertIndex + 1] = vertSideB;
@@ -106,8 +106,8 @@ namespace BetterSpline
             mesh.RecalculateBounds ();
         }
         
-        void AssignMeshComponents () {
-
+        void AssignMeshComponents () 
+        {
             if (meshHolder == null) {
                 meshHolder = new GameObject ("Road Mesh Holder");
             }

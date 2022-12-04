@@ -56,6 +56,11 @@ namespace BetterSpline
 				}
 			}
 		}
+
+		public BezierPath(IEnumerable<Transform> transforms) :
+			this(transforms.Select(t => t.position))
+		{
+		}
 		
 		public Vector3 this[int i] => points[i];
 		
@@ -158,7 +163,11 @@ namespace BetterSpline
 		public Vector3[] GetPointsInSegment(int segmentIndex)
 		{
 			segmentIndex = Mathf.Clamp(segmentIndex, 0, NumSegments - 1);
-			return new[] { this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2], this[LoopIndex(segmentIndex * 3 + 3)] };
+			return new[]
+			{
+				this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2],
+				this[LoopIndex(segmentIndex * 3 + 3)]
+			};
 		}
 
 		public void MovePoint(int i, Vector3 pointPos, bool suppressPathModifiedEvent = false)
@@ -187,7 +196,7 @@ namespace BetterSpline
 				Vector3[] p = GetPointsInSegment(i);
 				for (int j = 0; j < p.Length; j++)
 				{
-					p[j] = MathUtility.TransformPoint(p[j], transform);
+					p[j] = Utility.TransformPoint(p[j], transform);
 				}
 
 				minMax.AddValue(p[0]);
@@ -201,57 +210,6 @@ namespace BetterSpline
 			}
 
 			return new Bounds((minMax.Min + minMax.Max) / 2, minMax.Max - minMax.Min);
-		}
-		
-		public bool FlipNormals
-		{
-			get => flipNormals;
-			set
-			{
-				if (flipNormals != value)
-				{
-					flipNormals = value;
-					NotifyPathModified();
-				}
-			}
-		}
-		
-		public float GlobalNormalsAngle
-		{
-			get => globalNormalsAngle;
-			set
-			{
-				if (value != globalNormalsAngle)
-				{
-					globalNormalsAngle = value;
-					NotifyPathModified();
-				}
-			}
-		}
-		
-		public float GetAnchorNormalAngle(int anchorIndex)
-		{
-			return perAnchorNormalsAngle[anchorIndex] % 360;
-		}
-		
-		public void SetAnchorNormalAngle(int anchorIndex, float angle)
-		{
-			angle = (angle + 360) % 360;
-			if (perAnchorNormalsAngle[anchorIndex] != angle)
-			{
-				perAnchorNormalsAngle[anchorIndex] = angle;
-				NotifyPathModified();
-			}
-		}
-		
-		public void ResetNormalAngles()
-		{
-			for (int i = 0; i < perAnchorNormalsAngle.Count; i++)
-			{
-				perAnchorNormalsAngle[i] = 0;
-			}
-			globalNormalsAngle = 0;
-			NotifyPathModified();
 		}
 		
 		void UpdateBounds()

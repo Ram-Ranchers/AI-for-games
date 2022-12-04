@@ -106,7 +106,7 @@ namespace BetterSpline
 							handleDragMouseEnd += new Vector2(Event.current.delta.x, -Event.current.delta.y);
 							inputType = HandleInputType.LMBDrag;
 							
-							position = MouseUtility.GetMouseWorldPosition();
+							position = Utility.GetMouseWorldPosition();
 
 							GUI.changed = true;
 							Event.current.Use();

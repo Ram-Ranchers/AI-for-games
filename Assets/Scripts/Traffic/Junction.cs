@@ -35,19 +35,32 @@ public class Junction : MonoBehaviour
         cycleLast = Time.time;
     }
 
+    private void GenerateJunction()
+    {
+
+    }
+
+    public bool exitClear()
+    {
+        //get vehicle planned route then check the exit road for space/ also check if there will be space if the car starts moving now
+
+        return true;
+    }
+
     private void Update()
     {
         //on some trigger call pathgeneration, need to make a tool or soemthing?
 
         if(cycleLast+cycleTime>Time.time)
         {
-            lightCycle();
+            LightCycle();
+            //update road stoppage for connecting roads
         }
 
     }
 
     //cycle traffic control
-    void lightCycle()
+    void LightCycle()
     {
         //TODO Pedestrian stuff?
         for (int i = 0; i < activeRoads.Count; i++)
@@ -58,7 +71,7 @@ public class Junction : MonoBehaviour
 
 
     //generate pathways
-    void pathGeneration()
+    void PathGeneration()
     {
         for(int i = 0; i < connectedRoads.Count; i++)
         {

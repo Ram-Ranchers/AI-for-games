@@ -40,9 +40,9 @@ namespace BetterSpline
                     Vector3 pointOnPath = CubicBezierUtility.EvaluateCurve(segmentPoints, t);
                     Vector3 nextPointOnPath = CubicBezierUtility.EvaluateCurve(segmentPoints, t + increment);
                     
-                    float localAngle = 180 - MathUtility.MinAngle(prevPointOnPath, pointOnPath, nextPointOnPath);
+                    float localAngle = 180 - Utility.MinAngle(prevPointOnPath, pointOnPath, nextPointOnPath);
                     float angleFromPrevVertex =
-	                    180 - MathUtility.MinAngle(lastAddedPoint, pointOnPath, nextPointOnPath);
+	                    180 - Utility.MinAngle(lastAddedPoint, pointOnPath, nextPointOnPath);
                     float angleError = Mathf.Max(localAngle, angleFromPrevVertex);
 
 
