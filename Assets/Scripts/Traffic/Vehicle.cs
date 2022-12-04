@@ -35,13 +35,6 @@ public class Vehicle : MonoBehaviour
         Vector3 targetDir = PointA.position - transform.position;
         float dot = Vector3.Dot(targetDir, transform.forward);
 
-        //RaycastHit hit;
-
-        //if(Physics.Raycast(transform.position, transform.forward, out hit, slowingDistance))
-        //{
-
-        //}
-
         if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
         {
             speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
