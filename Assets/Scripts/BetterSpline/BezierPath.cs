@@ -18,10 +18,6 @@ namespace BetterSpline
 		
 		[SerializeField, HideInInspector]
 		List<float> perAnchorNormalsAngle;
-		[SerializeField, HideInInspector]
-		float globalNormalsAngle;
-		[SerializeField, HideInInspector]
-		bool flipNormals;
 		
 		public BezierPath(Vector3 centre)
 		{
@@ -62,7 +58,12 @@ namespace BetterSpline
 		{
 		}
 		
-		public Vector3 this[int i] => points[i];
+		public Vector3 this[int i] => GetPoint(i);
+
+		public Vector3 GetPoint(int i)
+		{
+			return points[i];
+		}
 		
 		public void SetPoint(int i, Vector3 localPosition, bool suppressPathModifiedEvent = false)
 		{
@@ -78,7 +79,7 @@ namespace BetterSpline
 		public int NumAnchorPoints => (points.Count + 2) / 3;
 		
 		public int NumSegments => points.Count / 3;
-
+		
 		public void AddSegmentToEnd(Vector3 anchorPos)
 		{
 			int lastAnchorIndex = points.Count - 1;
@@ -163,13 +164,13 @@ namespace BetterSpline
 		public Vector3[] GetPointsInSegment(int segmentIndex)
 		{
 			segmentIndex = Mathf.Clamp(segmentIndex, 0, NumSegments - 1);
-			return new[]
+			return new Vector3[]
 			{
 				this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2],
 				this[LoopIndex(segmentIndex * 3 + 3)]
 			};
 		}
-
+		
 		public void MovePoint(int i, Vector3 pointPos, bool suppressPathModifiedEvent = false)
 		{
 			pointPos.y = 0;

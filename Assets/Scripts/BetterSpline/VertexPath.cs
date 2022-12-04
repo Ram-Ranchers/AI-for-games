@@ -122,56 +122,56 @@ namespace BetterSpline
             return Utility.TransformPoint(localPoints[index], transform);
         }
 
-        public Vector3 GetPointAtDistance(float dst) 
+        public Vector3 GetPointAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
-            return GetPointAtTime(t);
+            return GetPointAtTime (t, endOfPathInstruction);
         }
 
-        public Vector3 GetDirectionAtDistance(float dst) 
+        public Vector3 GetDirectionAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
-            return GetDirection(t);
+            return GetDirection (t, endOfPathInstruction);
         }
 
-        public Vector3 GetNormalAtDistance(float dst) 
+        public Vector3 GetNormalAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
-            return GetNormal(t);
+            return GetNormal(t, endOfPathInstruction);
         }
 
-        public Quaternion GetRotationAtDistance(float dst) 
+        public Quaternion GetRotationAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
-            return GetRotation(t);
+            return GetRotation(t, endOfPathInstruction);
         }
         
-        public Vector3 GetPointAtTime(float t)
+        public Vector3 GetPointAtTime(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
-            var data = CalculatePercentOnPathData(t);
+            var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             return Vector3.Lerp(GetPoint (data.previousIndex), GetPoint (data.nextIndex), data.percentBetweenIndices);
         }
         
-        public Vector3 GetDirection(float t) 
+        public Vector3 GetDirection(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
-            var data = CalculatePercentOnPathData(t);
+            var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             Vector3 dir = Vector3.Lerp(localTangents[data.previousIndex], localTangents[data.nextIndex], data.percentBetweenIndices);
             return Utility.TransformDirection(dir, transform);
         }
 
-        public Vector3 GetNormal(float t) 
+        public Vector3 GetNormal(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
-            var data = CalculatePercentOnPathData(t);
+            var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             Vector3 normal = Vector3.Lerp(localNormals[data.previousIndex], localNormals[data.nextIndex], data.percentBetweenIndices);
             return Utility.TransformDirection(normal, transform);
         }
 
-        public Quaternion GetRotation(float t) 
+        public Quaternion GetRotation(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
-            var data = CalculatePercentOnPathData(t);
+            var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             Vector3 direction = Vector3.Lerp(localTangents[data.previousIndex], localTangents[data.nextIndex], data.percentBetweenIndices);
             Vector3 normal = Vector3.Lerp(localNormals[data.previousIndex], localNormals[data.nextIndex], data.percentBetweenIndices);
-            return Quaternion.LookRotation(Utility.TransformDirection (direction, transform), Utility.TransformDirection (normal, transform));
+            return Quaternion.LookRotation(Utility.TransformDirection(direction, transform), Utility.TransformDirection(normal, transform));
         }
 
         public Vector3 GetClosestPointOnPath(Vector3 worldPoint) 
@@ -199,8 +199,26 @@ namespace BetterSpline
             return Mathf.Lerp(cumulativeLengthAtEachVertex[data.previousIndex], cumulativeLengthAtEachVertex[data.nextIndex], data.percentBetweenIndices);
         }
         
-        TimeOnPathData CalculatePercentOnPathData(float t) 
-        {
+        /// For a given value 't' between 0 and 1, calculate the indices of the two vertices before and after t.
+        /// Also calculate how far t is between those two vertices as a percentage between 0 and 1.
+        TimeOnPathData CalculatePercentOnPathData (float t, EndOfPathInstruction endOfPathInstruction) {
+            switch (endOfPathInstruction) 
+            {
+                case EndOfPathInstruction.Loop:
+                    if (t < 0) 
+                    {
+                        t += Mathf.CeilToInt (Mathf.Abs (t));
+                    }
+                    t %= 1;
+                    break;
+                case EndOfPathInstruction.Reverse:
+                    t = Mathf.PingPong (t, 1);
+                    break;
+                case EndOfPathInstruction.Stop:
+                    t = Mathf.Clamp01 (t);
+                    break;
+            }
+
             int prevIndex = 0;
             int nextIndex = NumPoints - 1;
             int i = Mathf.RoundToInt (t * (NumPoints - 1));
@@ -223,8 +241,8 @@ namespace BetterSpline
                 }
             }
 
-            float abPercent = Mathf.InverseLerp(times[prevIndex], times[nextIndex], t);
-            return new TimeOnPathData(prevIndex, nextIndex, abPercent);
+            float abPercent = Mathf.InverseLerp (times[prevIndex], times[nextIndex], t);
+            return new TimeOnPathData (prevIndex, nextIndex, abPercent);
         }
 
         TimeOnPathData CalculateClosestPointOnPathData(Vector3 localPoint) 
