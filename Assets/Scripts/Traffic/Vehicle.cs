@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BetterSpline;
 
 public class Vehicle : MonoBehaviour
 {
@@ -9,11 +10,15 @@ public class Vehicle : MonoBehaviour
     [SerializeField] public float vehicleSpeed;
     private List<Junction> path;
 
-    public float distanceAlongRoad = 0;
-
     public Transform PointA;
     private float slowingDistance = 50f;
-    private float maxSpeed = 100f;
+    private float maxSpeed = 30f;
+
+    public PathCreator pathCreator;
+    public EndOfPathInstruction end;
+    public float distanceAlongRoad = 0;
+
+    private bool isOpposite = false;
 
     // Start is called before the first frame update
     void Start()
@@ -45,12 +50,25 @@ public class Vehicle : MonoBehaviour
             }
         }
 
-        else
+        else if(vehicleSpeed < maxSpeed)
         {
             vehicleSpeed += acceleration * Time.deltaTime;
         }
 
-        transform.Translate(transform.forward * Time.deltaTime * vehicleSpeed * speedPercent);
+        distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
+        transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
+
+        //fix rotation to follow spline properly
+        transform.rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).y, transform.rotation.z, 1);
+
+        //get it to work by flipping direction
+
+        if(isOpposite)
+        {
+            distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
+            transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
+            transform.rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).y, transform.rotation.z, 1);
+        }
     }
 
     private float DistanceFromPoint(Vector3 point)
