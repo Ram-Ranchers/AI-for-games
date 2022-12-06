@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace BetterSpline 
 {
@@ -42,35 +43,17 @@ namespace BetterSpline
             up = bounds.size.z > bounds.size.y ? Vector3.up : -Vector3.forward;
             Vector3 lastRotationAxis = up;
             
-            for (int i = 0; i < localPoints.Length; i++) {
+            for (int i = 0; i < localPoints.Length; i++) 
+            {
                 localPoints[i] = pathSplitData.vertices[i];
                 localTangents[i] = pathSplitData.tangents[i];
                 cumulativeLengthAtEachVertex[i] = pathSplitData.cumulativeLength[i];
                 times[i] = cumulativeLengthAtEachVertex[i] / length;
-                
-                    if (i == 0) 
-                    {
-                        localNormals[0] = Vector3.Cross (lastRotationAxis, pathSplitData.tangents[0]).normalized;
-                    } else
-                    {
-                        
-                        Vector3 offset = (localPoints[i] - localPoints[i - 1]);
-                        float sqrDst = offset.sqrMagnitude;
-                        Vector3 r = lastRotationAxis - offset * 2 / sqrDst * Vector3.Dot(offset, lastRotationAxis);
-                        Vector3 t = localTangents[i - 1] -
-                                    offset * 2 / sqrDst * Vector3.Dot(offset, localTangents[i - 1]);
 
-                        
-                        Vector3 v2 = localTangents[i] - t;
-                        float c2 = Vector3.Dot (v2, v2);
-
-                        Vector3 finalRot = r - v2 * 2 / c2 * Vector3.Dot (v2, r);
-                        Vector3 n = Vector3.Cross (finalRot, localTangents[i]).normalized;
-                        localNormals[i] = n;
-                        lastRotationAxis = finalRot;
-                    }
+                localNormals[i] = Vector3.Cross (localTangents[i], up) * (bezierPath.FlipNormals ? 1 : -1);
             }
 
+            
             float normalsAngleErrorAcrossJoin = Vector3.SignedAngle(localNormals[localNormals.Length - 1],
                 localNormals[0], localTangents[0]);
                 
@@ -199,8 +182,6 @@ namespace BetterSpline
             return Mathf.Lerp(cumulativeLengthAtEachVertex[data.previousIndex], cumulativeLengthAtEachVertex[data.nextIndex], data.percentBetweenIndices);
         }
         
-        /// For a given value 't' between 0 and 1, calculate the indices of the two vertices before and after t.
-        /// Also calculate how far t is between those two vertices as a percentage between 0 and 1.
         TimeOnPathData CalculatePercentOnPathData (float t, EndOfPathInstruction endOfPathInstruction) {
             switch (endOfPathInstruction) 
             {

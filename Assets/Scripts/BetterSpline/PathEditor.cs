@@ -187,7 +187,6 @@ namespace BetterSpline
 			}
 
 			shiftLastFrame = e.shift;
-
 		}
 
 		void DrawBezierPathSceneEditor()
@@ -276,7 +275,9 @@ namespace BetterSpline
 
 					int attachedControlIndex = (i == bezierPath.NumPoints - 1) ? i - 1 : i + 1;
 					Vector3 dir = (bezierPath[attachedControlIndex] - handlePosition).normalized;
+					float handleRotOffset = (360 + bezierPath.GlobalNormalsAngle) % 360;
 					anchorAngleHandle.radius = handleSize * 3;
+					anchorAngleHandle.angle = handleRotOffset + bezierPath.GetAnchorNormalAngle(i / 3);
 					Vector3 handleDirection = Vector3.Cross(dir, Vector3.up);
 					Matrix4x4 handleMatrix = Matrix4x4.TRS(
 						handlePosition,
@@ -292,6 +293,7 @@ namespace BetterSpline
 						if (EditorGUI.EndChangeCheck())
 						{
 							Undo.RecordObject(creator, "Set angle");
+							bezierPath.SetAnchorNormalAngle(i / 3, anchorAngleHandle.angle - handleRotOffset);
 						}
 					}
 
@@ -351,7 +353,6 @@ namespace BetterSpline
 				bezierPath.MovePoint(i, localHandlePosition);
 
 			}
-
 		}
 
 		void OnDisable()
