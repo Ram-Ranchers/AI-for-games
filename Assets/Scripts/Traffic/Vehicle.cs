@@ -18,7 +18,7 @@ public class Vehicle : MonoBehaviour
     public EndOfPathInstruction end;
     public float distanceAlongRoad = 0;
 
-    private bool isOpposite = false;
+    public bool isOpposite = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +40,8 @@ public class Vehicle : MonoBehaviour
         Vector3 targetDir = PointA.position - transform.position;
         float dot = Vector3.Dot(targetDir, transform.forward);
 
+        Quaternion rotation;
+
         if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
         {
             speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
@@ -55,18 +57,20 @@ public class Vehicle : MonoBehaviour
             vehicleSpeed += acceleration * Time.deltaTime;
         }
 
-        distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
-        transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
-
-        //fix rotation to follow spline properly
-        transform.rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).y, transform.rotation.z, 1);
-
-        //get it to work by flipping direction
-
-        if(isOpposite)
+        if(!isOpposite)
         {
             distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
-            transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
+            transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
+            //fix rotation to follow spline properly
+            rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).z, transform.rotation.z, 1);
+            transform.rotation = Quaternion.Inverse(rotation);
+        }
+        //get it to work by flipping direction
+        else
+        {
+            distanceAlongRoad = 300;
+            distanceAlongRoad -= vehicleSpeed * speedPercent * Time.deltaTime;
+            transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
             transform.rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).y, transform.rotation.z, 1);
         }
     }
