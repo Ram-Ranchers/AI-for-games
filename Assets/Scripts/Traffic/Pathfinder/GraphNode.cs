@@ -28,8 +28,8 @@ public class Curve
 
 
 
-    Vector3 GetPointAt(Curve bezierCurve, float t)
-    {
+   //Vector3 GetPointAt(Curve bezierCurve, float t)
+   //{
 
-    }
+   //}
 }

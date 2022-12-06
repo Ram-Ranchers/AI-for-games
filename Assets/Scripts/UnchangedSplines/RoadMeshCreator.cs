@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿ using System;
+ using UnityEngine;
 
 namespace UnchangedSplines 
 {
@@ -17,7 +18,8 @@ namespace UnchangedSplines
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
         private Mesh mesh;
-
+        private MeshCollider meshCollider;
+        
         protected override void PathUpdated() 
         {
             if (pathCreator != null)
@@ -121,14 +123,22 @@ namespace UnchangedSplines
             {
                 gameObject.AddComponent<MeshRenderer>();
             }
-
+            if (!GetComponent<MeshCollider>())
+            {
+                gameObject.AddComponent<MeshCollider>();
+            }
+            
             meshRenderer = GetComponent<MeshRenderer>();
             meshFilter = GetComponent<MeshFilter>();
+            meshCollider = GetComponent<MeshCollider>();
+            
             if (mesh == null) 
             {
                 mesh = new Mesh ();
             }
+            
             meshFilter.sharedMesh = mesh;
+            meshCollider.sharedMesh = mesh;
         }
 
         private void AssignMaterials() 
@@ -139,6 +149,5 @@ namespace UnchangedSplines
                 meshRenderer.sharedMaterials[0].mainTextureScale = new Vector3 (1, textureTiling);
             }
         }
-
     }
 }

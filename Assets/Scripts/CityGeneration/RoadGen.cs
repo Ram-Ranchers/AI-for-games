@@ -40,7 +40,12 @@ namespace CityGeneration
                 bezierPath.SetPoint(2,
                     new Vector3(Random.Range(2, terrain.terrainData.size.x / 2), 8, Random.Range(2, terrain.terrainData.size.z / 2)));
                 bezierPath.SetPoint(3, new Vector3(Random.Range(3, terrain.terrainData.size.x), 8, Random.Range(3, terrain.terrainData.size.z)));
-               
+
+                if (Physics.CheckSphere(newPoint, 1f))
+                {
+                    print("Hello");
+                }
+                
                 print("Anchor points : " + bezierPath.NumAnchorPoints);
                 print("Points : " + bezierPath.NumPoints);
                 print("Segments : " + bezierPath.NumSegments);
