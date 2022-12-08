@@ -18,6 +18,10 @@ namespace BetterSpline
 		
 		[SerializeField, HideInInspector]
 		List<float> perAnchorNormalsAngle;
+		[SerializeField, HideInInspector]
+		float globalNormalsAngle;
+		[SerializeField, HideInInspector]
+		bool flipNormals;
 		
 		public BezierPath(Vector3 centre)
 		{
@@ -211,6 +215,63 @@ namespace BetterSpline
 			}
 
 			return new Bounds((minMax.Min + minMax.Max) / 2, minMax.Max - minMax.Min);
+		}
+		
+		public bool FlipNormals
+		{
+			get
+			{
+				return flipNormals;
+			}
+			set
+			{
+				if (flipNormals != value)
+				{
+					flipNormals = value;
+					NotifyPathModified();
+				}
+			}
+		}
+		
+		public float GlobalNormalsAngle
+		{
+			get
+			{
+				return globalNormalsAngle;
+			}
+			set
+			{
+				if (value != globalNormalsAngle)
+				{
+					globalNormalsAngle = value;
+					NotifyPathModified();
+				}
+			}
+		}
+		
+		public float GetAnchorNormalAngle(int anchorIndex)
+		{
+			return perAnchorNormalsAngle[anchorIndex] % 360;
+		}
+		
+		public void SetAnchorNormalAngle(int anchorIndex, float angle)
+		{
+			angle = (angle + 360) % 360;
+			if (perAnchorNormalsAngle[anchorIndex] != angle)
+			{
+				perAnchorNormalsAngle[anchorIndex] = angle;
+				NotifyPathModified();
+			}
+		}
+		
+		public void ResetNormalAngles()
+		{
+			for (int i = 0; i < perAnchorNormalsAngle.Count; i++)
+			{
+				perAnchorNormalsAngle[i] = 0;
+			}
+			globalNormalsAngle = 0;
+			NotifyPathModified();
 		}
 		
 		void UpdateBounds()
