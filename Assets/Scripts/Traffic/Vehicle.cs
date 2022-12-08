@@ -42,6 +42,9 @@ public class Vehicle : MonoBehaviour
 
         Quaternion rotation;
 
+        Vector3 currentPosition;
+        Vector3 lastPosition;
+
         if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
         {
             speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
@@ -59,19 +62,22 @@ public class Vehicle : MonoBehaviour
 
         if(!isOpposite)
         {
+            lastPosition = transform.position;
             distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
             transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
-            //fix rotation to follow spline properly
-            rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).z, transform.rotation.z, 1);
-            transform.rotation = Quaternion.Inverse(rotation);
+            currentPosition = transform.position;
+            Vector3 directionMoving = (currentPosition - lastPosition).normalized;
+            transform.rotation = Quaternion.LookRotation(directionMoving);
         }
         //get it to work by flipping direction
         else
         {
-            distanceAlongRoad = 300;
+            lastPosition = transform.position;
             distanceAlongRoad -= vehicleSpeed * speedPercent * Time.deltaTime;
             transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
-            transform.rotation = new Quaternion(transform.rotation.x, pathCreator.path.GetRotationAtDistance(distanceAlongRoad, end).y, transform.rotation.z, 1);
+            currentPosition = transform.position;
+            Vector3 directionMoving = (currentPosition - lastPosition).normalized;
+            transform.rotation = Quaternion.LookRotation(directionMoving);
         }
     }
 
