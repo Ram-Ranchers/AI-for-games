@@ -73,8 +73,8 @@ public class Vehicle : MonoBehaviour
         else
         {
             lastPosition = transform.position;
-            distanceAlongRoad -= vehicleSpeed * speedPercent * Time.deltaTime;
-            transform.position = new Vector3(pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).x, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointAtDistance(distanceAlongRoad, end).z);
+            distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
+            transform.position = new Vector3(pathCreator.path.GetPointFromEnd(distanceAlongRoad, end).x, pathCreator.path.GetPointFromEnd(distanceAlongRoad, end).y + 1.2f, pathCreator.path.GetPointFromEnd(distanceAlongRoad, end).z);
             currentPosition = transform.position;
             Vector3 directionMoving = (currentPosition - lastPosition).normalized;
             transform.rotation = Quaternion.LookRotation(directionMoving);

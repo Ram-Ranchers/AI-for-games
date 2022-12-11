@@ -111,6 +111,12 @@ namespace BetterSpline
             return GetPointAtTime (t, endOfPathInstruction);
         }
 
+        public Vector3 GetPointFromEnd(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+        {
+            float t = dst / length;
+            return GetReversePointAtTime(t, endOfPathInstruction);
+        }
+
         public Vector3 GetDirectionAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
@@ -134,7 +140,12 @@ namespace BetterSpline
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             return Vector3.Lerp(GetPoint (data.previousIndex), GetPoint (data.nextIndex), data.percentBetweenIndices);
         }
-        
+
+        public Vector3 GetReversePointAtTime(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+        {
+            var data = CalculateReversePercentOnPathData(t, endOfPathInstruction);
+            return Vector3.Lerp(GetPoint(data.previousIndex), GetPoint(data.nextIndex), data.percentBetweenIndices);
+        }
         public Vector3 GetDirection(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
@@ -224,6 +235,51 @@ namespace BetterSpline
 
             float abPercent = Mathf.InverseLerp (times[prevIndex], times[nextIndex], t);
             return new TimeOnPathData (prevIndex, nextIndex, abPercent);
+        }
+
+        TimeOnPathData CalculateReversePercentOnPathData(float t, EndOfPathInstruction endOfPathInstruction)
+        {
+            switch (endOfPathInstruction)
+            {
+                case EndOfPathInstruction.Loop:
+                    if (t < 0)
+                    {
+                        t += Mathf.CeilToInt(Mathf.Abs(t));
+                    }
+                    t %= 1;
+                    break;
+                case EndOfPathInstruction.Reverse:
+                    t = Mathf.PingPong(t, 1);
+                    break;
+                case EndOfPathInstruction.Stop:
+                    t = Mathf.Clamp01(t);
+                    break;
+            }
+
+            int prevIndex = 0;
+            int nextIndex = NumPoints - 1;
+            int i = Mathf.RoundToInt(t * (NumPoints - 1));
+
+            while (true)
+            {
+                if (t <= times[i])
+                {
+                    nextIndex = i;
+                }
+                else
+                {
+                    prevIndex = i;
+                }
+                i = (nextIndex + prevIndex) / 2;
+
+                if (nextIndex - prevIndex <= 1)
+                {
+                    break;
+                }
+            }
+
+            float abPercent = Mathf.InverseLerp(times[nextIndex], times[prevIndex], t);
+            return new TimeOnPathData(prevIndex, nextIndex, abPercent);
         }
 
         TimeOnPathData CalculateClosestPointOnPathData(Vector3 localPoint) 
