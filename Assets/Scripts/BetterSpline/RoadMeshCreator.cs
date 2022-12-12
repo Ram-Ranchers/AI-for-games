@@ -1,24 +1,24 @@
 ﻿using UnityEngine;
 
-namespace BetterSpline 
+namespace BetterSpline
 {
-    public class RoadMeshCreator : PathSceneTool 
+    public class RoadMeshCreator : PathSceneTool
     {
-        [Header ("Road settings")]
+        [Header("Road settings")]
         public float roadWidth = .4f;
-        [Range (0, .5f)]
+        [Range(0, .5f)]
         public float thickness = .15f;
 
-        [Header ("Material settings")]
+        [Header("Material settings")]
         public Material roadMaterial;
         public Material undersideMaterial;
         public float textureTiling = 1;
-        
+
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
         private Mesh mesh;
 
-        protected override void PathUpdated() 
+        protected override void PathUpdated()
         {
             if (pathCreator != null)
             {
@@ -28,7 +28,7 @@ namespace BetterSpline
             }
         }
 
-        private void CreateRoadMesh() 
+        private void CreateRoadMesh()
         {
             Vector3[] verts = new Vector3[path.NumPoints * 8];
             Vector2[] uvs = new Vector2[verts.Length];
@@ -44,18 +44,18 @@ namespace BetterSpline
 
             int[] triangleMap = { 0, 8, 1, 1, 8, 9 };
             int[] sidesTriangleMap = { 4, 6, 14, 12, 4, 14, 5, 15, 7, 13, 15, 5 };
-            
-            for (int i = 0; i < path.NumPoints; i++) 
+
+            for (int i = 0; i < path.NumPoints; i++)
             {
                 Vector3 localUp = path.up;
                 Vector3 localRight = Vector3.Cross(localUp, path.GetTangent(i));
-                
+
                 Vector3 vertSideA = path.GetPoint(i) - localRight * Mathf.Abs(roadWidth);
                 Vector3 vertSideB = path.GetPoint(i) + localRight * Mathf.Abs(roadWidth);
-                
+
                 verts[vertIndex + 0] = vertSideA;
                 verts[vertIndex + 1] = vertSideB;
-                
+
                 verts[vertIndex + 2] = vertSideA - localUp * thickness;
                 verts[vertIndex + 3] = vertSideB - localUp * thickness;
 
@@ -64,8 +64,8 @@ namespace BetterSpline
                 verts[vertIndex + 6] = verts[vertIndex + 2];
                 verts[vertIndex + 7] = verts[vertIndex + 3];
 
-                uvs[vertIndex + 0] = new Vector2 (0, path.times[i]);
-                uvs[vertIndex + 1] = new Vector2 (1, path.times[i]);
+                uvs[vertIndex + 0] = new Vector2(0, path.times[i]);
+                uvs[vertIndex + 1] = new Vector2(1, path.times[i]);
 
                 normals[vertIndex + 0] = localUp;
                 normals[vertIndex + 1] = localUp;
@@ -78,14 +78,14 @@ namespace BetterSpline
                 normals[vertIndex + 6] = -localRight;
                 normals[vertIndex + 7] = localRight;
 
-                if (i < path.NumPoints - 1) 
+                if (i < path.NumPoints - 1)
                 {
-                    for (int j = 0; j < triangleMap.Length; j++) 
+                    for (int j = 0; j < triangleMap.Length; j++)
                     {
                         roadTriangles[triIndex + j] = (vertIndex + triangleMap[j]) % verts.Length;
                         underRoadTriangles[triIndex + j] = (vertIndex + triangleMap[triangleMap.Length - 1 - j] + 2) % verts.Length;
                     }
-                    for (int j = 0; j < sidesTriangleMap.Length; j++) 
+                    for (int j = 0; j < sidesTriangleMap.Length; j++)
                     {
                         sideOfRoadTriangles[triIndex * 2 + j] = (vertIndex + sidesTriangleMap[j]) % verts.Length;
                     }
@@ -106,39 +106,38 @@ namespace BetterSpline
             mesh.SetTriangles(sideOfRoadTriangles, 2);
             mesh.RecalculateBounds();
         }
-        
-        private void AssignMeshComponents() 
+
+        private void AssignMeshComponents()
         {
             transform.rotation = Quaternion.identity;
             transform.position = Vector3.zero;
             transform.localScale = Vector3.one;
-            
-            if (!gameObject.GetComponent<MeshFilter>()) 
+
+            if (!gameObject.GetComponent<MeshFilter>())
             {
                 gameObject.AddComponent<MeshFilter>();
             }
-            if (!GetComponent<MeshRenderer>()) 
+            if (!GetComponent<MeshRenderer>())
             {
                 gameObject.AddComponent<MeshRenderer>();
             }
 
             meshRenderer = GetComponent<MeshRenderer>();
             meshFilter = GetComponent<MeshFilter>();
-            if (mesh == null) 
+            if (mesh == null)
             {
-                mesh = new Mesh ();
+                mesh = new Mesh();
             }
             meshFilter.sharedMesh = mesh;
         }
 
-        private void AssignMaterials() 
+        private void AssignMaterials()
         {
-            if (roadMaterial != null && undersideMaterial != null) 
+            if (roadMaterial != null && undersideMaterial != null)
             {
                 meshRenderer.sharedMaterials = new[] { roadMaterial, undersideMaterial, undersideMaterial };
-                meshRenderer.sharedMaterials[0].mainTextureScale = new Vector3 (1, textureTiling);
+                meshRenderer.sharedMaterials[0].mainTextureScale = new Vector3(1, textureTiling);
             }
         }
-
     }
 }

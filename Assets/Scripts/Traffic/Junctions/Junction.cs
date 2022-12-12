@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-struct Road
-{
-    public int lanesLeft,lanesRight;
-    public Vector3 end1,end2;
-    public List<Vehicle> vehicles;
-}
+//struct Road
+//{
+//    public int lanesLeft,lanesRight;
+//    public Vector3 end1,end2;
+//    public List<Vehicle> vehicles;
+//}
 
 struct QuadGen
 {

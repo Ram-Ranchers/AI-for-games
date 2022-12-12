@@ -113,7 +113,7 @@ namespace BetterSpline
 
         public Vector3 GetPointFromEnd(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
-            float t = (dst / length);
+            float t = dst / length;
             t = 1 - t;
             return GetPointAtTime(t, endOfPathInstruction);
         }

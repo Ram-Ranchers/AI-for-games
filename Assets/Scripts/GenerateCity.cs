@@ -6,12 +6,12 @@ using CityGeneration;
 public class GenerateCity : MonoBehaviour
 {
     public Buildings buildings;
-    public ControlRoads roads;
+    //public ControlRoads roads;
 
     void Start()
     {
-        buildings.SpawnBuildingsInsideZone();
-        roads.GenerateRoads();
+        //    buildings.SpawnBuildingsInsideZone();
+        //    roads.GenerateRoads();
     }
 
     // Update is called once per frame

@@ -7,23 +7,23 @@ public class Vehicle : MonoBehaviour
 {
     //Driving shit
     [SerializeField] public float vehicleLength;
-    [SerializeField] public float vehicleSpeed;
+    public float vehicleSpeed;
     private List<Junction> path;
 
     public Transform PointA;
     private float slowingDistance = 50f;
-    private float maxSpeed = 30f;
 
     public PathCreator pathCreator;
     public EndOfPathInstruction end;
     public float distanceAlongRoad = 0;
+    private Road currentRoad;
 
     public bool isOpposite = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentRoad = pathCreator.transform.gameObject.GetComponent<Road>();
     }
 
     // Update is called once per frame
@@ -55,7 +55,7 @@ public class Vehicle : MonoBehaviour
             }
         }
 
-        else if(vehicleSpeed < maxSpeed)
+        else if(vehicleSpeed < currentRoad.GetMaxSpeed())
         {
             vehicleSpeed += acceleration * Time.deltaTime;
         }
