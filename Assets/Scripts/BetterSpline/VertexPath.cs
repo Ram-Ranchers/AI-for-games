@@ -111,6 +111,13 @@ namespace BetterSpline
             return GetPointAtTime (t, endOfPathInstruction);
         }
 
+        public Vector3 GetPointFromEnd(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+        {
+            float t = (dst / length);
+            t = 1 - t;
+            return GetPointAtTime(t, endOfPathInstruction);
+        }
+
         public Vector3 GetDirectionAtDistance(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             float t = dst / length;
@@ -134,7 +141,7 @@ namespace BetterSpline
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             return Vector3.Lerp(GetPoint (data.previousIndex), GetPoint (data.nextIndex), data.percentBetweenIndices);
         }
-        
+
         public Vector3 GetDirection(float t, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) 
         {
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
