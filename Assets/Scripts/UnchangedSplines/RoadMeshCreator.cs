@@ -1,5 +1,5 @@
-﻿ using System;
- using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace UnchangedSplines 
 {
@@ -29,7 +29,7 @@ namespace UnchangedSplines
                 CreateRoadMesh();
             }
         }
-
+        
         private void CreateRoadMesh() 
         {
             Vector3[] verts = new Vector3[path.NumPoints * 8];

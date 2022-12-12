@@ -130,6 +130,16 @@ namespace UnchangedSplines {
             }
             return times;
         }
+        
+        public static bool Intersects(Vector3[] getPointsInSegment, Vector3[] vector3s)
+        {
+            // Check if the points are overlapping
+            if (getPointsInSegment[0] == vector3s[0] && getPointsInSegment[1] == vector3s[1] && getPointsInSegment[2] == vector3s[2] && getPointsInSegment[3] == vector3s[3])
+            {
+                return true;
+            }
 
+            return false;
+        }
     }
 }
