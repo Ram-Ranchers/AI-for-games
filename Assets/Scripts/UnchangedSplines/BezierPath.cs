@@ -411,11 +411,78 @@ namespace UnchangedSplines
 			segmentIndex = Mathf.Clamp(segmentIndex, 0, NumSegments - 1);
 			return new Vector3[] { this[segmentIndex * 3], this[segmentIndex * 3 + 1], this[segmentIndex * 3 + 2], this[LoopIndex(segmentIndex * 3 + 3)] };
 		}
+		
+		public bool IsIntersecting(BezierPath otherPath)
+		{
+			for (int i = 0; i < NumSegments; i++)
+			{
+				for (int j = 0; j < otherPath.NumSegments; j++)
+				{
+					if (CubicBezierUtility.Intersects(GetPointsInSegment(i), otherPath.GetPointsInSegment(j)))
+					{
+						Debug.Log("Intersecting at segment " + i + " and " + j);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		// Combine two paths together
+		public void AddPath(BezierPath otherPath)
+		{
+			if (otherPath.NumSegments == 0)
+			{
+				return;
+			}
 
+			if (NumSegments == 0)
+			{
+				points = new List<Vector3>(otherPath.points);
+				perAnchorNormalsAngle = new List<float>(otherPath.perAnchorNormalsAngle);
+				NotifyPathModified();
+				return;
+			}
+
+			if (isClosed || otherPath.isClosed)
+			{
+				Debug.LogWarning("Cannot add paths together if either path is closed");
+				return;
+			}
+
+			Vector3 lastAnchor = this[points.Count - 1];
+			Vector3 firstAnchor = otherPath[0];
+			Vector3 offset = lastAnchor - firstAnchor;
+
+			// Move other path's points to be relative to this path's last anchor
+			for (int i = 0; i < otherPath.points.Count; i++)
+			{
+				otherPath.points[i] += offset;
+			}
+
+			// Remove last anchor and first control point from this path
+			points.RemoveAt(points.Count - 1);
+			perAnchorNormalsAngle.RemoveAt(perAnchorNormalsAngle.Count - 1);
+
+			// Add other path's points to this path
+			points.AddRange(otherPath.points);
+			perAnchorNormalsAngle.AddRange(otherPath.perAnchorNormalsAngle);
+
+			NotifyPathModified();
+		}
+		
+		/*public void CombineTwoBeziers(Vector3[] bezier1, Vector3[] bezier2, out Vector3[] combinedBezier)
+		{
+			combinedBezier = new Vector3[4];
+			combinedBezier[0] = bezier1[0];
+			combinedBezier[1] = (bezier1[1] + bezier2[0]) * .5f;
+			combinedBezier[2] = (bezier1[2] + bezier2[1]) * .5f;
+			combinedBezier[3] = bezier2[3];
+		}*/
+		
 		/// Move an existing point to a new position
 		public void MovePoint(int i, Vector3 pointPos, bool suppressPathModifiedEvent = false)
 		{
-
 			if (space == PathSpace.xy)
 			{
 				pointPos.z = 0;
@@ -585,7 +652,7 @@ namespace UnchangedSplines
 				return bounds;
 			}
 		}
-
+		
 		#endregion
 
 		#region Internal methods and accessors

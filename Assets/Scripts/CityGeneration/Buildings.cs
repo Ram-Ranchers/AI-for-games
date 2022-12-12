@@ -28,6 +28,8 @@ namespace CityGeneration
                 zones.Add(gameObjectZone[i].GetComponent<Zones>());
                 boxColliders.Add(gameObjectZone[i].GetComponent<BoxCollider>());
             }
+            
+            SpawnBuildingsOnTerrain();
         }
         
         public void SpawnBuildingsInsideZone()
