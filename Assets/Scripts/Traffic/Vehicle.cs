@@ -10,7 +10,7 @@ public class Vehicle : MonoBehaviour
     public float vehicleSpeed;
     private List<Junction> path;
 
-    public Transform PointA;
+    //public Transform PointA;
     private float slowingDistance = 50f;
 
     public PathCreator pathCreator;
@@ -37,30 +37,35 @@ public class Vehicle : MonoBehaviour
         float acceleration = 10f;
         float speedPercent = 1f;
 
-        Vector3 targetDir = PointA.position - transform.position;
-        float dot = Vector3.Dot(targetDir, transform.forward);
+        //Vector3 targetDir = PointA.position - transform.position;
+       // float dot = Vector3.Dot(targetDir, transform.forward);
 
         Quaternion rotation;
 
         Vector3 currentPosition;
         Vector3 lastPosition;
 
-        if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
-        {
-            speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
+        //if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
+        //{
+        //    speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
 
-            if (speedPercent < 0.1f)
-            {
-                vehicleSpeed = 0f;
-            }
-        }
+        //    if (speedPercent < 0.1f)
+        //    {
+        //        vehicleSpeed = 0f;
+        //    }
+        //}
 
-        else if(vehicleSpeed < currentRoad.GetMaxSpeed())
+        //else if(vehicleSpeed < currentRoad.GetMaxSpeed())
+        //{
+        //    vehicleSpeed += acceleration * Time.deltaTime;
+        //}
+
+        if (vehicleSpeed < currentRoad.GetMaxSpeed())
         {
             vehicleSpeed += acceleration * Time.deltaTime;
         }
 
-        if(!isOpposite)
+        if (!isOpposite)
         {
             lastPosition = transform.position;
             distanceAlongRoad += vehicleSpeed * speedPercent * Time.deltaTime;
