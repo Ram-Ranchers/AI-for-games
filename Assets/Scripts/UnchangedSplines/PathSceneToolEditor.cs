@@ -26,7 +26,6 @@ namespace UnchangedSplines
                     if (pathTool.autoUpdate)
                     {
                         TriggerUpdate();
-
                     }
                 }
             }
@@ -41,15 +40,13 @@ namespace UnchangedSplines
             }
 
         }
-
-
+        
         void TriggerUpdate() {
             if (pathTool.pathCreator != null) {
                 pathTool.TriggerUpdate();
             }
         }
-
-
+        
         protected virtual void OnPathModified()
         {
             if (pathTool.autoUpdate)
@@ -75,8 +72,7 @@ namespace UnchangedSplines
                 pathTool.pathCreator.pathUpdated -= OnPathModified;
             }
         }
-
- 
+        
         protected virtual void Subscribe()
         {
             if (pathTool.pathCreator != null)

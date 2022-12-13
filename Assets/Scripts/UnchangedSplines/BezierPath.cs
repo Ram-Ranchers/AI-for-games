@@ -294,6 +294,40 @@ namespace UnchangedSplines
 
 			NotifyPathModified();
 		}
+		
+		public Vector3 AddSegmentToEndVector3(Vector3 anchorPos)
+		{
+			if (isClosed)
+			{
+				return anchorPos;
+			}
+
+			int lastAnchorIndex = points.Count - 1;
+			// Set position for new control to be mirror of its counterpart
+			Vector3 secondControlForOldLastAnchorOffset = (points[lastAnchorIndex] - points[lastAnchorIndex - 1]);
+			if (controlMode != ControlMode.Mirrored && controlMode != ControlMode.Automatic)
+			{
+				// Set position for new control to be aligned with its counterpart, but with a length of half the distance from prev to new anchor
+				float dstPrevToNewAnchor = (points[lastAnchorIndex] - anchorPos).magnitude;
+				secondControlForOldLastAnchorOffset = (points[lastAnchorIndex] - points[lastAnchorIndex - 1]).normalized * dstPrevToNewAnchor * .5f;
+			}
+			Vector3 secondControlForOldLastAnchor = points[lastAnchorIndex] + secondControlForOldLastAnchorOffset;
+			Vector3 controlForNewAnchor = (anchorPos + secondControlForOldLastAnchor) * .5f;
+
+			points.Add(secondControlForOldLastAnchor);
+			points.Add(controlForNewAnchor);
+			points.Add(anchorPos);
+			perAnchorNormalsAngle.Add(perAnchorNormalsAngle[perAnchorNormalsAngle.Count - 1]);
+
+			if (controlMode == ControlMode.Automatic)
+			{
+				AutoSetAllAffectedControlPoints(points.Count - 1);
+			}
+
+			NotifyPathModified();
+
+			return anchorPos;
+		}
 
 		/// Add new anchor point to start of the path
 		public void AddSegmentToStart(Vector3 anchorPos)
@@ -325,7 +359,7 @@ namespace UnchangedSplines
 			}
 			NotifyPathModified();
 		}
-
+		
 		/// Insert new anchor point at given position. Automatically place control points around it so as to keep shape of curve the same
 		public void SplitSegment(Vector3 anchorPos, int segmentIndex, float splitTime)
 		{
@@ -370,7 +404,7 @@ namespace UnchangedSplines
 
 			NotifyPathModified();
 		}
-
+		
 		/// Delete the anchor point at given index, as well as its associated control points
 		public void DeleteSegment(int anchorIndex)
 		{

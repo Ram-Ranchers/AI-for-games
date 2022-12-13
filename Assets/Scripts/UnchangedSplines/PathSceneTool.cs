@@ -18,8 +18,7 @@ namespace UnchangedSplines
         public void TriggerUpdate() {
             PathUpdated();
         }
-
-
+        
         protected virtual void OnDestroy() {
             if (onDestroyed != null) {
                 onDestroyed();

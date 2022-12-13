@@ -20,6 +20,8 @@ namespace UnchangedSplines
         private Mesh mesh;
         private MeshCollider meshCollider;
         
+        //private PathCreator pathCreator;
+        
         protected override void PathUpdated() 
         {
             if (pathCreator != null)
