@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnchangedSplines;
 //struct Road
 //{
 //    public int lanesLeft,lanesRight;
@@ -19,8 +20,11 @@ public class Junction : MonoBehaviour
 {
     // attributes :: road connections anchors ; list of paths ;
 
+    PathCreator pathCreator;
+
     private List<Road> connectedRoads;
-    private List<QuadGen> traversalPaths;
+    private List<QuadGen> traversalPathsQuads;
+
     private List<Vehicle> vehiclesInJunction;
     private List<bool> activeRoads;
 
@@ -35,6 +39,11 @@ public class Junction : MonoBehaviour
     }
 
     private void GenerateJunction()
+    {
+
+    }
+
+    public void addRoad()
     {
 
     }
@@ -54,8 +63,9 @@ public class Junction : MonoBehaviour
         {
             LightCycle();
             //update road stoppage for connecting roads
-        }
 
+        }
+        
     }
 
     //cycle traffic control
@@ -68,23 +78,30 @@ public class Junction : MonoBehaviour
         }
     }
 
-
     //generate pathways
     void PathGeneration()
     {
-        for(int i = 0; i < connectedRoads.Count; i++)
+        //for(int i = 0; i < connectedRoads.Count; i++)
+        //{
+        //    for (int j = 0; j < connectedRoads[i].lanesLeft; j++)
+        //    {
+        //        for (int k = 0; k < connectedRoads.Count; k++)
+        //        {
+        //            if (i == k)
+        //                continue;
+        //            for (int l = 0; l < connectedRoads[k].lanesRight; l++)
+        //            {
+        //                //gen spline path using vehicle heading 
+        //            }
+        //        }
+        //    }
+        //}
+        
+        for (int i = 0; i < connectedRoads.Count; i++)
         {
-            for (int j = 0; j < connectedRoads[i].lanesLeft; j++)
+            for (int j = i+1; j < connectedRoads.Count; j++)
             {
-                for (int k = 0; k < connectedRoads.Count; k++)
-                {
-                    if (i == k)
-                        continue;
-                    for (int l = 0; l < connectedRoads[k].lanesRight; l++)
-                    {
-                        //gen spline path using vehicle heading 
-                    }
-                }
+
             }
         }
     }
