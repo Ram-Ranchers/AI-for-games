@@ -295,40 +295,6 @@ namespace UnchangedSplines
 			NotifyPathModified();
 		}
 		
-		public Vector3 AddSegmentToEndVector3(Vector3 anchorPos)
-		{
-			if (isClosed)
-			{
-				return anchorPos;
-			}
-
-			int lastAnchorIndex = points.Count - 1;
-			// Set position for new control to be mirror of its counterpart
-			Vector3 secondControlForOldLastAnchorOffset = (points[lastAnchorIndex] - points[lastAnchorIndex - 1]);
-			if (controlMode != ControlMode.Mirrored && controlMode != ControlMode.Automatic)
-			{
-				// Set position for new control to be aligned with its counterpart, but with a length of half the distance from prev to new anchor
-				float dstPrevToNewAnchor = (points[lastAnchorIndex] - anchorPos).magnitude;
-				secondControlForOldLastAnchorOffset = (points[lastAnchorIndex] - points[lastAnchorIndex - 1]).normalized * dstPrevToNewAnchor * .5f;
-			}
-			Vector3 secondControlForOldLastAnchor = points[lastAnchorIndex] + secondControlForOldLastAnchorOffset;
-			Vector3 controlForNewAnchor = (anchorPos + secondControlForOldLastAnchor) * .5f;
-
-			points.Add(secondControlForOldLastAnchor);
-			points.Add(controlForNewAnchor);
-			points.Add(anchorPos);
-			perAnchorNormalsAngle.Add(perAnchorNormalsAngle[perAnchorNormalsAngle.Count - 1]);
-
-			if (controlMode == ControlMode.Automatic)
-			{
-				AutoSetAllAffectedControlPoints(points.Count - 1);
-			}
-
-			NotifyPathModified();
-
-			return anchorPos;
-		}
-
 		/// Add new anchor point to start of the path
 		public void AddSegmentToStart(Vector3 anchorPos)
 		{
@@ -504,15 +470,6 @@ namespace UnchangedSplines
 
 			NotifyPathModified();
 		}
-		
-		/*public void CombineTwoBeziers(Vector3[] bezier1, Vector3[] bezier2, out Vector3[] combinedBezier)
-		{
-			combinedBezier = new Vector3[4];
-			combinedBezier[0] = bezier1[0];
-			combinedBezier[1] = (bezier1[1] + bezier2[0]) * .5f;
-			combinedBezier[2] = (bezier1[2] + bezier2[1]) * .5f;
-			combinedBezier[3] = bezier2[3];
-		}*/
 		
 		/// Move an existing point to a new position
 		public void MovePoint(int i, Vector3 pointPos, bool suppressPathModifiedEvent = false)

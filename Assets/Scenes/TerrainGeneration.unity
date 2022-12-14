@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: edcfce73746fda24ebbd9e9650db8d93, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 19ea9cafe7fdf6845bbf0376910b73b1, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 2
-  size: {x: 100, y: 100, z: 100}
+  size: {x: 200, y: 200, z: 200}
 --- !u!65 &175189436
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -265,7 +265,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 100, z: 100}
+  m_Size: {x: 200, y: 200, z: 200}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &561655412
 GameObject:
@@ -511,7 +511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 0
-  size: {x: 100, y: 100, z: 100}
+  size: {x: 200, y: 200, z: 200}
 --- !u!65 &905664047
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -523,7 +523,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 100, z: 100}
+  m_Size: {x: 200, y: 200, z: 200}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1084122319
 GameObject:
@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 1
-  size: {x: 100, y: 100, z: 100}
+  size: {x: 200, y: 200, z: 200}
 --- !u!65 &1538632449
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -750,7 +750,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 100, z: 100}
+  m_Size: {x: 200, y: 200, z: 200}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1858826201
 GameObject:
