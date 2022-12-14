@@ -14,7 +14,7 @@ namespace CityGeneration
         private GameObject road2;
         private PathCreator pathCreator;
         private PathCreator pathCreator2;
-        
+
         private void Awake()
         {
             RoadCreation();
@@ -72,8 +72,78 @@ namespace CityGeneration
                     lastPoint.y,
                     lastPoint.z + Random.Range(0.0f, 10.0f)));
             }
+            
+            // // Get all the points in each segment and assign them to new road 2
+            // road2 = new GameObject("RoadContainer2");
+            // road2.AddComponent<PathCreator>();
+            // road2.AddComponent<RoadMeshCreator>();
+            // road2.GetComponent<RoadMeshCreator>().roadMaterial = Resources.Load<Material>("Road");
+            // road2.GetComponent<RoadMeshCreator>().undersideMaterial = Resources.Load<Material>("Road");
+            // road2.GetComponent<RoadMeshCreator>().textureTiling = 100.0f;
+            //
+            // // Create a new bezier path
+            // pathCreator2 = road2.GetComponent<PathCreator>();
+            // pathCreator2.bezierPath = new BezierPath(pointsPos, false, PathSpace.xz);
+            // pathCreator2.bezierPath.ControlPointMode = BezierPath.ControlMode.Automatic;
+            // pathCreator2.bezierPath.GlobalNormalsAngle = 0;
+            //
+            // // Add all the points from the first road to the second road
+            // for (int i = 0; i < pathCreator.bezierPath.NumPoints; i++)
+            // {
+            //     pathCreator2.bezierPath.AddSegmentToEnd(pathCreator.bezierPath[i]);
+            // }
+
+            for (int i = 0; i < 10; i++)
+            {
+                road2 = new GameObject("RoadContainer");
+                road2.AddComponent<PathCreator>();
+                road2.AddComponent<RoadMeshCreator>();
+                road2.GetComponent<RoadMeshCreator>().roadMaterial = Resources.Load<Material>("Road");
+                road2.GetComponent<RoadMeshCreator>().undersideMaterial = Resources.Load<Material>("Road");
+                road2.GetComponent<RoadMeshCreator>().textureTiling = 100.0f;
+                terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
+    
+                // Create a new bezier path
+                pathCreator2 = road2.GetComponent<PathCreator>();
+                pathCreator2.bezierPath = new BezierPath(pointsPos, false, PathSpace.xz);
+                pathCreator2.bezierPath.ControlPointMode = BezierPath.ControlMode.Automatic;
+                pathCreator2.bezierPath.GlobalNormalsAngle = 0;
+    
+                // Get the last point of the path
+                Vector3 lastPoint2 = pathCreator.bezierPath[pathCreator.bezierPath.NumPoints - 1];
+    
+                // Get the y axis of each point and assign it to the sample height of the terrain
+                lastPoint2.y = terrain.SampleHeight(lastPoint2);
+    
+                // Create a new bezier path, coming in from the side of the terrain
+                pathCreator2.bezierPath.AddSegmentToEnd(new Vector3(
+                    lastPoint2.x, lastPoint2.y,
+                    lastPoint2.z + Random.Range(0.0f, terrain.terrainData.size.z)));
+            }
         }
 
+        /*// Check if a segment is intersecting with a building
+        public bool IsSegmentIntersectingWithBuilding(int segmentIndex)
+        {
+            Vector3[] segmentPoints = pathCreator.bezierPath.GetPointsInSegment(segmentIndex);
+            Vector3[] segmentPointsWorld = new Vector3[segmentPoints.Length];
+            for (int i = 0; i < segmentPoints.Length; i++)
+            {
+                segmentPointsWorld[i] = transform.TransformPoint(segmentPoints[i]);
+            }
+
+            // Check if segment is intersecting with any building
+            foreach (Building building in buildings)
+            {
+                if (building.IsSegmentIntersecting(segmentPointsWorld))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }*/
+        
         private void RoadGeneration()
         {
             for (int i = 0; i < 10; i++)
@@ -92,15 +162,17 @@ namespace CityGeneration
                 pathCreator2.bezierPath.ControlPointMode = BezierPath.ControlMode.Automatic;
                 pathCreator2.bezierPath.GlobalNormalsAngle = 0;
 
+                // Get the last point of the path
+                Vector3 lastPoint = pathCreator.bezierPath[pathCreator.bezierPath.NumPoints - 1];
+
+                // Get the y axis of each point and assign it to the sample height of the terrain
+                lastPoint.y = terrain.SampleHeight(lastPoint);
+                
                 // Create a new bezier path, coming in from the side of the terrain
                 pathCreator2.bezierPath.AddSegmentToEnd(new Vector3(
-                    Random.Range(0.0f, terrain.terrainData.size.x),
-                    terrain.SampleHeight(new Vector3(
-                        Random.Range(0.0f, terrain.terrainData.size.x),
-                        0,
-                        Random.Range(0.0f, terrain.terrainData.size.z))),
-                    Random.Range(0.0f, terrain.terrainData.size.z)));
-                
+                    lastPoint.x + Random.Range(0.0f, terrain.terrainData.size.x), lastPoint.y,
+                    lastPoint.z + Random.Range(0.0f, terrain.terrainData.size.z)));
+
                 /*while (pathCreator2.bezierPath[pathCreator2.bezierPath.NumPoints - 1].x < terrain.terrainData.size.x &&
                        pathCreator2.bezierPath[pathCreator2.bezierPath.NumPoints - 1].z < terrain.terrainData.size.z)
                 {
