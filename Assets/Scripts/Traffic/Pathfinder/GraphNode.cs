@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GraphNode : MonoBehaviour
 {
+    public Vector3 position;
     // Start is called before the first frame update
     void Start()
     {
