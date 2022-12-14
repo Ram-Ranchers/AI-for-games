@@ -22,7 +22,8 @@ public class Junction : MonoBehaviour
 
     PathCreator pathCreator;
 
-    private List<Road> connectedRoads;
+    private List<GameObject> connectedRoads;
+    private List<Vector3> roadConnections;
     private List<QuadGen> traversalPathsQuads;
 
     private List<Vehicle> vehiclesInJunction;
@@ -38,7 +39,7 @@ public class Junction : MonoBehaviour
         cycleLast = Time.time;
     }
 
-    private void GenerateJunction()
+    public void GenerateJunction(GameObject roadContainer1,GameObject roadContainer2)
     {
 
     }
