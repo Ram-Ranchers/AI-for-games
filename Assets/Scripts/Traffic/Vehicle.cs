@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BetterSpline;
+using UnchangedSplines;
 
 public class Vehicle : MonoBehaviour
 {
     //Driving shit
     [SerializeField] public float vehicleLength;
     public float vehicleSpeed;
+    private float maxSpeed;
     private List<Junction> path;
 
     //public Transform PointA;
@@ -24,6 +25,8 @@ public class Vehicle : MonoBehaviour
     void Start()
     {
         currentRoad = pathCreator.transform.gameObject.GetComponent<Road>();
+
+        maxSpeed = Random.Range(currentRoad.GetMaxSpeed() / 100 * 50, currentRoad.GetMaxSpeed());
     }
 
     // Update is called once per frame
@@ -40,12 +43,10 @@ public class Vehicle : MonoBehaviour
         //Vector3 targetDir = PointA.position - transform.position;
        // float dot = Vector3.Dot(targetDir, transform.forward);
 
-        Quaternion rotation;
-
         Vector3 currentPosition;
         Vector3 lastPosition;
 
-        //if(dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
+        //if (dot < 5f && DistanceFromPoint(PointA.position) <= slowingDistance)
         //{
         //    speedPercent = Mathf.Clamp01(DistanceFromPoint(PointA.position) / slowingDistance);
 
@@ -55,12 +56,29 @@ public class Vehicle : MonoBehaviour
         //    }
         //}
 
-        //else if(vehicleSpeed < currentRoad.GetMaxSpeed())
+        //else if (vehicleSpeed < currentRoad.GetMaxSpeed())
         //{
         //    vehicleSpeed += acceleration * Time.deltaTime;
         //}
 
-        if (vehicleSpeed < currentRoad.GetMaxSpeed())
+        int layerMask = 1 << 8;
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, slowingDistance, layerMask))
+        {
+            if (DistanceFromPoint(hit.transform.position) <= slowingDistance)
+            {
+                speedPercent = Mathf.Clamp01(DistanceFromPoint(hit.transform.position) / slowingDistance);
+
+                if (speedPercent < 0.1f)
+                {
+                    vehicleSpeed = 0f;
+                }
+            }
+        }
+
+        if (vehicleSpeed < maxSpeed)
         {
             vehicleSpeed += acceleration * Time.deltaTime;
         }

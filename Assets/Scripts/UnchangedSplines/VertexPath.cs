@@ -178,6 +178,13 @@ namespace UnchangedSplines
             return GetPointAtTime (t, endOfPathInstruction);
         }
 
+        public Vector3 GetPointFromEnd(float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+        {
+            float t = dst / length;
+            t = 1 - t;
+            return GetPointAtTime(t, endOfPathInstruction);
+        }
+
         /// Gets forward direction on path based on distance travelled.
         public Vector3 GetDirectionAtDistance (float dst, EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop) {
             float t = dst / length;

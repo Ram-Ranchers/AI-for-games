@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3675593073365933855}
   - component: {fileID: 7671547987875632398}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Car
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vehicleLength: 0
   vehicleSpeed: 0
-  PointA: {fileID: 0}
   pathCreator: {fileID: 0}
   end: 0
   distanceAlongRoad: 0
@@ -59,9 +58,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3675593073365933855}
     m_Modifications:
+    - target: {fileID: 161809054326456301, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 291256625013451125, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1393487233057267578, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1432158517084246910, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1551763856682548159, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2391231780761746266, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
@@ -75,13 +90,25 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2977373087255335402, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3056242659725651922, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Name
       value: HatchBack
       objectReference: {fileID: 0}
+    - target: {fileID: 3056242659725651922, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3625858430615976644, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3780874022486842987, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4001422426455164211, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
@@ -111,9 +138,21 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6260104284647038532, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6607577283688999289, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7136645921223600734, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072596618944320202, guid: caa620191086e3a48867a078990f739b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8157840860765065223, guid: caa620191086e3a48867a078990f739b, type: 3}
       propertyPath: m_Mesh
